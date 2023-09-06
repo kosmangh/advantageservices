@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="advantageplusPU" transaction-type="JTA">
+    <jta-data-source>jdbc/advantage_plus</jta-data-source>
+    <class>com.sabonay.advantageservices.entities.useraccounts.AuditLog</class>
+    <class>com.sabonay.advantageservices.entities.useraccounts.Staff</class>
+    <class>com.sabonay.advantageservices.entities.useraccounts.Department</class>
+    <class>com.sabonay.advantageservices.entities.estatesetup.EstateZone</class>
+    <class>com.sabonay.advantageservices.entities.estatesetup.Region</class>
+    <class>com.sabonay.advantageservices.entities.estatesetup.Estate</class>
+    <class>com.sabonay.advantageservices.entities.estatesetup.EstateProperty</class>
+    <class>com.sabonay.advantageservices.entities.estatesetup.EstateBlock</class>
+    <class>com.sabonay.advantageservices.entities.estatebilling.PropertyCharge</class>
+    <class>com.sabonay.advantageservices.entities.estatebilling.PropertyLedger</class>
+    <class>com.sabonay.advantageservices.entities.estatebilling.Bills</class>
+    <class>com.sabonay.advantageservices.entities.estatebilling.BillPayment</class>
+    <class>com.sabonay.advantageservices.entities.occupancy.Occupant</class>
+    <class>com.sabonay.advantageservices.entities.occupancy.OccupantProperty</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+  
+  </persistence-unit>
+</persistence>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Branch Grouped By Wards" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="1aa47f74-3782-477c-ae51-13c05517c3fc">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="altbg" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EEEE"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="ward" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="wardCode" class="java.lang.String"/>
+	<parameter name="footerTitle" class="java.lang.String"/>
+	<parameter name="printedBy" class="java.lang.String"/>
+	<parameter name="constituency" class="java.lang.String"/>
+	<parameter name="reportHeaderPortrait" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="reportFooterPortrait" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="companyLogo" class="java.io.InputStream"/>
+	<parameter name="mottor" class="java.lang.String"/>
+	<field name="branchCode" class="java.lang.String"/>
+	<field name="ward" class="java.lang.String"/>
+	<field name="branch" class="java.lang.String"/>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="Variable_1" class="java.lang.Double"/>
+	<group name="groupByWard">
+		<groupExpression><![CDATA[$F{ward}]]></groupExpression>
+		<groupHeader>
+			<band height="31">
+				<textField>
+					<reportElement mode="Transparent" x="1" y="0" width="554" height="16" printWhenGroupChanges="groupByWard" uuid="e16da2e7-ca83-438c-b300-673416beceff">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Bottom">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ward}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="145" y="18" width="410" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="68f466ed-a716-41c8-a0d0-0cd0b10eb6a9"/>
+					<box leftPadding="2" bottomPadding="1">
+						<topPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Calibri" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Branch]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="25" y="18" width="120" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="6404c2e4-e4b0-4d22-8772-cec14086aaf1"/>
+					<box leftPadding="2" bottomPadding="1">
+						<topPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Calibri" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Branch Code]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="18" width="24" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="5f2c082c-fb94-4a71-b06b-5eff074a30b1"/>
+					<box leftPadding="2" bottomPadding="1">
+						<topPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Calibri" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[No.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="44" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="44" uuid="ee7acc22-4883-46d6-a6ea-d45f7ea7f344"/>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyName">
+					<subreportParameterExpression><![CDATA[$P{companyName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportHeaderPortrait">
+					<subreportParameterExpression><![CDATA[$P{reportHeaderPortrait}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyLogo">
+					<subreportParameterExpression><![CDATA[$P{companyLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="mottor">
+					<subreportParameterExpression><![CDATA[$P{mottor}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{reportHeaderPortrait}]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="altbg" x="25" y="0" width="120" height="13" forecolor="#333333" uuid="3085faed-037b-4140-a904-5f6a952524b0"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{branchCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="altbg" x="1" y="0" width="24" height="13" forecolor="#333333" uuid="e878f9b8-47ba-4ee2-b927-df8558b52f6b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{counter}+"."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="altbg" x="145" y="0" width="410" height="13" forecolor="#333333" uuid="a39c9701-6513-479a-a2f8-c5ab1a319be7"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{branch}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="72" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="41" width="58" height="14" forecolor="#FFFFFF" backcolor="#029141" uuid="0237def5-b14a-41de-bd8e-dc63f537a5cb"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Printed By :]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="50" y="41" width="254" height="14" forecolor="#FFFFFF" backcolor="#029141" uuid="585b36a5-9698-471d-a61f-21edf9ea4274"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{printedBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="57" width="555" height="15" forecolor="#333333" backcolor="#FFFFFF" uuid="a469189a-27d2-4ea6-816f-4b235e1d9240"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{footerTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="290" y="41" width="226" height="14" forecolor="#FFFFFF" backcolor="#029141" uuid="73404fd2-2f43-42f9-9c18-b6e363248117"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="516" y="41" width="39" height="14" forecolor="#FFFFFF" backcolor="#029141" uuid="387da582-fdad-4ef3-94c9-01aa602797f7"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

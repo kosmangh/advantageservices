@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="branch list" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1aa47f74-3782-477c-ae51-13c05517c3fc">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="altbg" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EEEE"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="footerTitle" class="java.lang.String"/>
+	<parameter name="printedBy" class="java.lang.String"/>
+	<field name="clientId" class="java.lang.String"/>
+	<field name="clientName" class="java.lang.String"/>
+	<field name="receiptNo" class="java.lang.String"/>
+	<field name="receiptDate" class="java.util.Date"/>
+	<field name="chequeCash" class="java.lang.String"/>
+	<field name="amount" class="java.lang.Double"/>
+	<field name="remarks" class="java.lang.String"/>
+	<field name="revenueCollectorName" class="java.lang.String"/>
+	<field name="operationalSector" class="java.lang.String"/>
+	<variable name="counter" class="java.lang.Integer" resetType="Group" resetGroup="collectorName" calculation="Count">
+		<variableExpression><![CDATA[$V{collectorName_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="totalAmt" class="java.lang.Double" resetType="Group" resetGroup="collectorName" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+	</variable>
+	<group name="collectorName" isStartNewPage="true" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{revenueCollectorName}]]></groupExpression>
+		<groupHeader>
+			<band height="68">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="471" y="4" width="84" height="14" forecolor="#333333" uuid="cff64019-7003-485a-ba59-a3b301074432">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="1" rightPadding="0">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#333333"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+						<font fontName="Calibri" size="7" isBold="true" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{revenueCollectorName}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="0" y="-1" width="240" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="8317a4fb-217f-4eb5-ae6e-abded8109ce8"/>
+					<box leftPadding="2"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Calibri" size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="-1" y="21" width="220" height="17" forecolor="#0D0C0C" backcolor="#003B7C" uuid="b470f54d-5860-4245-9ef0-ce869f7bcba2"/>
+					<box leftPadding="2">
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Calibri" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="340" y="40" width="90" height="27" forecolor="#000000" backcolor="#FFFFFF" uuid="ca160639-496b-4dbb-9446-1cf4183e67dd"/>
+					<box leftPadding="4">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.25"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CHQ. No. / CASH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="25" y="54" width="45" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="6ef662c7-e7e7-4b26-9fba-e24c7e96b746"/>
+					<box topPadding="2" leftPadding="4">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="1.25"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CLIENT ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="480" y="40" width="74" height="27" forecolor="#000000" backcolor="#FFFFFF" uuid="25a39b74-5d02-4f96-9cc0-4d50439b850a"/>
+					<box topPadding="2" leftPadding="4">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[REMARKS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="40" width="24" height="27" forecolor="#000000" backcolor="#FFFFFF" uuid="5f2c082c-fb94-4a71-b06b-5eff074a30b1"/>
+					<box padding="3">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[S/N]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="226" y="52" width="60" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="52fc1684-b04c-415f-818b-10afaf48f3b8">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="2" leftPadding="4">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NUMBER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="54" width="155" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="0f1742f8-caee-4431-8f50-42e53bb261dc"/>
+					<box topPadding="2" leftPadding="4">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NAME]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="26" y="40" width="201" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="6404c2e4-e4b0-4d22-8772-cec14086aaf1"/>
+					<box topPadding="2" leftPadding="0">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CUSTOMER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="430" y="40" width="50" height="27" forecolor="#000000" backcolor="#FFFFFF" uuid="849429b5-bf1a-4258-8be7-70bafd61f66f"/>
+					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="4">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.25" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AMOUNT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="360" y="4" width="111" height="14" uuid="54b34861-2b68-4f81-a4a6-87ef6338fd96"/>
+					<box bottomPadding="1">
+						<pen lineWidth="0.0" lineStyle="Solid"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="Calibri" size="7" isBold="false"/>
+					</textElement>
+					<text><![CDATA[REVENUE COLLECTOR :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="225" y="40" width="114" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="48e01f46-a39a-4b11-9f95-fe7317ff8b7d"/>
+					<box topPadding="2" leftPadding="0">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RECEIPT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="286" y="54" width="54" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="627b236c-3a8c-4857-ac90-00d71bca0e74">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="2" leftPadding="4">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="360" y="19" width="111" height="14" uuid="1874245c-9347-4ce8-b775-86f8888f1361"/>
+					<box>
+						<pen lineWidth="0.0" lineStyle="Solid"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="Calibri" size="7" isBold="false"/>
+					</textElement>
+					<text><![CDATA[OPERATIONAL SECTOR :]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="471" y="19" width="84" height="14" forecolor="#333333" uuid="00d7d9a8-9aee-422c-b60d-af251fb8ff54">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="0">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+						<font fontName="Calibri" size="7" isBold="true" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{operationalSector}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="57">
+				<staticText>
+					<reportElement mode="Opaque" x="340" y="0" width="90" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="550f25c9-dc67-44a8-bd44-b6900b85a3e4"/>
+					<box topPadding="2" leftPadding="0" rightPadding="2">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<textField pattern="#,###.00" isBlankWhenNull="true">
+					<reportElement x="430" y="0" width="50" height="20" uuid="a5392efb-2c9e-4020-961d-acbf74d45f58"/>
+					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="4">
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totalAmt}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="44" width="115" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="851ddd14-5adb-483a-97da-c55bf5a0ee1f"/>
+					<box topPadding="2" leftPadding="0" rightPadding="2">
+						<pen lineWidth="0.25" lineStyle="Dotted"/>
+						<topPen lineWidth="0.25" lineStyle="Dashed"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Signature of Revenue Collector]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="430" y="44" width="125" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="4b760f64-71fb-4fd5-b341-777f27dbce47"/>
+					<box topPadding="2" leftPadding="0" rightPadding="2">
+						<pen lineWidth="0.25" lineStyle="Dotted"/>
+						<topPen lineWidth="0.25" lineStyle="Dashed"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Endorsed by F&A Manager]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="220" y="44" width="114" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="7d94dd55-bfe0-433f-94cb-a8bf6aced93a"/>
+					<box topPadding="2" leftPadding="0" rightPadding="2">
+						<pen lineWidth="0.25" lineStyle="Dotted"/>
+						<topPen lineWidth="0.25" lineStyle="Dashed"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Checked By Supervisor (F&A)]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement style="altbg" x="480" y="0" width="74" height="15" forecolor="#333333" uuid="65fb4285-bd81-4dff-bb92-e72571b330cd"/>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="altbg" x="25" y="0" width="45" height="15" forecolor="#333333" uuid="3085faed-037b-4140-a904-5f6a952524b0"/>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.25" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{clientId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="altbg" x="1" y="0" width="24" height="15" forecolor="#333333" uuid="e878f9b8-47ba-4ee2-b927-df8558b52f6b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box padding="3" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{counter}+"."]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="altbg" x="225" y="0" width="61" height="15" forecolor="#333333" uuid="a39c9701-6513-479a-a2f8-c5ab1a319be7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.25" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{receiptNo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="altbg" x="70" y="0" width="155" height="15" forecolor="#333333" uuid="ce3d4e59-8aac-40aa-9842-06e9d73f3539"/>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{clientName}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy">
+				<reportElement style="altbg" x="286" y="0" width="54" height="15" forecolor="#333333" uuid="75726935-9a44-47f0-af1e-9d367b1b8016">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{receiptDate}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="altbg" x="340" y="0" width="90" height="15" forecolor="#333333" uuid="d97ad6c6-9d19-4518-9fa6-853c4b687200"/>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{chequeCash}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="#,###.00" isBlankWhenNull="true">
+				<reportElement style="altbg" x="430" y="0" width="50" height="15" forecolor="#333333" uuid="ecc2cc84-aab1-42ce-9153-74e196b56eb8"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Calibri" size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="72" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="41" width="58" height="14" forecolor="#FFFFFF" backcolor="#003B7C" uuid="17b17105-7738-4d8a-8257-8127ecb0e948"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Printed By :]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="50" y="41" width="255" height="14" forecolor="#FFFFFF" backcolor="#003B7C" uuid="f4963e81-38d7-4ee5-acce-c7aaba5d6558"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{printedBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="57" width="556" height="15" forecolor="#333333" uuid="8d4a1eea-117b-40e0-954f-be0e806bde25"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{footerTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="305" y="41" width="211" height="14" forecolor="#FFFFFF" backcolor="#003B7C" uuid="eb2bb8e3-64fe-47d9-bd3f-e5213c9d08b3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="516" y="41" width="39" height="14" forecolor="#FFFFFF" backcolor="#003B7C" uuid="1aaf502b-c128-45c0-8145-5eea597344da"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
