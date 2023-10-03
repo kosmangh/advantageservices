@@ -52,10 +52,6 @@ public class Estate extends EntityCrud implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date expirationdate;
 
-    @Column(name = "fresh_date")
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date freshDate;
-
     @Column(name = "additional_desc")
     private String addDesc;
 
@@ -131,14 +127,6 @@ public class Estate extends EntityCrud implements Serializable {
 
     public void setRegion(Region region) {
         this.region = region;
-    }
-
-    public Date getFreshDate() {
-        return freshDate;
-    }
-
-    public void setFreshDate(Date freshDate) {
-        this.freshDate = freshDate;
     }
 
     public String getEstateClass() {

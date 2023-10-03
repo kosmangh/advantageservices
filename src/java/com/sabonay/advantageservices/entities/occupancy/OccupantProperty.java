@@ -106,7 +106,7 @@ public class OccupantProperty extends EntityCrud implements Serializable {
         return totalDuration;
     }
 
-    public String getDurationLeft() {
+    public String getDurationLeft1() {
         if ((lastDateOfOccupancy != null)) {
             Calendar currentCalendar = Calendar.getInstance();
             Calendar lastCalendar = Calendar.getInstance();
@@ -131,6 +131,40 @@ public class OccupantProperty extends EntityCrud implements Serializable {
             }
         }
         return "Unknown";
+    }
+
+    public String getDurationLeft() {
+        // Create Calendar instances and set the dates
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(lastDateOfOccupancy);
+
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(new Date());
+
+        // Calculate the difference in milliseconds
+        long differenceInMillis = calendar1.getTimeInMillis() - calendar2.getTimeInMillis();
+
+        // Convert milliseconds to days
+        long days = differenceInMillis / (24 * 60 * 60 * 1000);
+
+        // Calculate the number of years and months based on days
+        int years = (int) (days / 365);
+        int months = (int) ((days % 365) / 30);
+        days = (int) ((days % 365) % 30);
+        String duration = "";
+        if (years > 0) {
+            duration = years + " years ";
+        }
+        if (months > 0) {
+            duration += months + " months ";
+        }
+        if (days > 0) {
+            duration += days + " days ";
+        }
+//        duration = years + " years " + months + " months " + days + " days";
+        // Return the result as an array
+        return duration;
+
     }
 
     public String getValidity() {

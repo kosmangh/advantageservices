@@ -52,7 +52,6 @@ public class EstateInfo extends EstateSuper {
             recordId = data.getRecordId();
             regionId = data.getRegion().getRecordId();
             regionName = data.getRegion().getRegionName();
-            freshDate = DateTimeUtils.formatDateTwo(data.getFreshDate(), DateTimeUtils.SIMPLE_PATTERN);
             additionalInfo = data.getAddDesc();
             estateClass = data.getEstateClass();
             estateLocation = data.getEstateLocation();
