@@ -25,6 +25,7 @@ public class Config extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.sabonay.advantageservices.controllers.AuthController.class);
         resources.add(com.sabonay.advantageservices.controllers.BillPaymentController.class);
+        resources.add(com.sabonay.advantageservices.controllers.DashboardController.class);
         resources.add(com.sabonay.advantageservices.controllers.DepartmentController.class);
         resources.add(com.sabonay.advantageservices.controllers.DropdownController.class);
         resources.add(com.sabonay.advantageservices.controllers.EstateBlockController.class);

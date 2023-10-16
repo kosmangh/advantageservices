@@ -267,12 +267,52 @@ public class EstatePropertyServices implements Serializable {
             List<EstateProperty> listOfEstateProperties = new ArrayList<>();
 
             if (request.getOccupiedProps()) {
-                log.info("for properties occupied by rental or ground rent");
+                log.info("for occupied properties (rental or ground rent)");
                 listOfEstateProperties = utitlityServices.getPropertiesOccupiedByBlock(request.getSearchValue(), request.getOccupationType());
             } else {
                 listOfEstateProperties = basicServices.searchRecords(EstateProperty.class, request.getSearchBy(),
                         request.getSearchValue(), EntityFields.createdDate);
             }
+
+            if (null == listOfEstateProperties) {
+                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+                return response;
+            }
+            AppLogger.printPayload(log, "estates", listOfEstateProperties);
+            log.info("total staff retrieved " + listOfEstateProperties.size());
+            List<EstatePropertyInfo> blocks = new ArrayList<>();
+            if (!listOfEstateProperties.isEmpty()) {
+                for (EstateProperty eachOne : listOfEstateProperties) {
+                    blocks.add(new EstatePropertyInfo(eachOne));
+                }
+            }
+            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
+            headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
+            response.setHeaderResponse(headerResponse);
+            response.setProperties(blocks);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "getdepartments IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        }
+    }
+
+    public EstatePropertyListResponse getProperties(GenericSearchRequest request) throws IOException {
+
+        EstatePropertyListResponse response = new EstatePropertyListResponse();
+        HeaderResponse headerResponse = new HeaderResponse();
+        try {
+            headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
+            AppLogger.printPayload(log, "header validation response before", headerResponse);
+            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                response.setHeaderResponse(headerResponse);
+                return response;
+            }
+            AppLogger.printPayload(log, "header validation response after", headerResponse);
+            List<EstateProperty> listOfEstateProperties = new ArrayList<>();
+            listOfEstateProperties = basicServices.searchRecords(EstateProperty.class, request.getSearchBy(),
+                    request.getSearchValue(), EntityFields.createdDate);
 
             if (null == listOfEstateProperties) {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));

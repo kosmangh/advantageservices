@@ -289,11 +289,6 @@ public class EstateServices extends CrudController implements Serializable {
             AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<Estate> listOfEstates = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, Estate.class);
-//            if (!request.getSearchBy().equalsIgnoreCase(AppConstants.ALL)) {
-//                builder.addStringQryParam(request.getSearchValue(), request.getSearchValue(), QryBuilder.ComparismCriteria.EQUAL);
-//            }
-//            builder.addStringQryParam(EntityFields._region_zone, request.getHeaderRequest().getZone(), QryBuilder.ComparismCriteria.EQUAL);
-//            builder.addObjectParam(EntityFields.deleted, false);
             listOfEstates = builder.buildQry().getResultList();
             if (null == listOfEstates) {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
@@ -316,7 +311,7 @@ public class EstateServices extends CrudController implements Serializable {
             response.setEstates(staffs);
             return response;
         } catch (IOException e) {
-            AppLogger.error(log, e, "getdepartments IOException");
+            AppLogger.error(log, e, "getEstates IOException");
             response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
             return response;
         }

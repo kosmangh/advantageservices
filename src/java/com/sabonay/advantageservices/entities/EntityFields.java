@@ -24,12 +24,17 @@ public class EntityFields {
     public static final String ledgerYear = "ledgerYear";
     public static final String dateOfRecordEntry = "dateOfRecordEntry";
     public static final String typeOfEntry = "dateOfRecordEntry";
+    public static String landSize = "landSize";
+    public static String blockSize = "blockSize";
+    public static String propertyLandSize = "propertyLandSize";
+
 
     public static final String _occupantName = "occupant.occupantName";
     public static final String _region = region + "." + recordId;
     public static final String _estate_block_property = "estateProperty.estateBlock.estate.recordId";
-    public static final String _estate = "estate.recordId";
     public static final String _block_property = "estateProperty.estateBlock.recordId";
+    public static final String _estate = "estate.recordId";
+    public static final String _estateBlock = "estateBlock.recordId";
     public static final String _property = "estateProperty.recordId";
     public static final String _occupant = "occupant.recordId";
     public static final String _region_zone = "region.zone.recordId";

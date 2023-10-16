@@ -118,4 +118,24 @@ public class EstatePropertyController implements Serializable {
             MDC.remove("requestid");
         }
     }
+    @POST
+    @Path(value = "/properties")
+    public EstatePropertyListResponse geProperties(GenericSearchRequest request) {
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        EstatePropertyListResponse response = new EstatePropertyListResponse();
+        HeaderResponse headerResponse = new HeaderResponse();
+        try {
+            AppLogger.printPayload(log, "EstatePropertyesListRequest ", request);
+            response = estatePropertyServices.getProperties(request);
+            AppLogger.printPayload(log, "EstatePropertyesListResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "EstatePropertyesListRequest IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            response.setHeaderResponse(headerResponse);
+            return response;
+        } finally {
+            MDC.remove("requestid");
+        }
+    }
 }

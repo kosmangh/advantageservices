@@ -126,7 +126,7 @@ public class StaffController {
         GenericResponse response = new GenericResponse();
         try {
             AppLogger.printPayload(log, "LoginAccountRequest ", request);
-            response = staffServices.loginAccount(request);
+            response = staffServices.createLoginAccount(request);
             AppLogger.printPayload(log, "LoginAccountResponse ", response);
             return response;
         } catch (IOException e) {

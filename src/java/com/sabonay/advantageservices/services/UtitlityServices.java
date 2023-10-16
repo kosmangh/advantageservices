@@ -243,7 +243,7 @@ public class UtitlityServices extends CrudController implements Serializable {
                     + "AND (e.lastDateOfOccupancy IS NULL "
                     + "OR e.lastDateOfOccupancy >=:checkDate) "
                     + "ORDER BY e.firstDateOfOccupancy ASC";
-            log.info("getOccupantProperties4Billing parameters billingType: BLK "
+            log.info("getPropertiesOccupiedByBlock parameters billingType: BLK "
                     + blockId + " occupationType: "
                     + "" + occupationType + " checkDate: " + checkDate);
             AppLogger.info(log, " qry fetch getOccupantProperties4Billing " + qry);

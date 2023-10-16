@@ -1,10 +1,12 @@
 package com.sabonay.advantageservices.services;
 
 import com.ctrloption.formating.DateTimeUtils;
+import com.ctrloption.security.SecurityHash;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.useraccounts.AuditLog;
 import com.sabonay.advantageservices.entities.useraccounts.Staff;
 import com.sabonay.advantageservices.models.AuditLogInfo;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.auth.AuditLogListRequest;
 import com.sabonay.advantageservices.restmodels.auth.AuditLogListResponse;
 import com.sabonay.advantageservices.restmodels.auth.AuditLogRequest;
@@ -15,7 +17,6 @@ import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.utils.AppConstants;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,7 +77,9 @@ public class AuthServices implements Serializable {
                 return response;
             }
 
-            Staff staff = basicServices.validateUser(request.getUsername(), request.getPassword());
+            String hashedPassword = SecurityHash.getInstance().shaHash(request.getPassword());
+            log.info("hashedPassword " + hashedPassword);
+            Staff staff = basicServices.validateUser(request.getUsername(), hashedPassword);
             if (null == staff) {
                 msg = ResponseCodes.INVALID_CREDENTIALS;
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -173,7 +176,8 @@ public class AuthServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            staff.setPassword(request.getPassword());
+            staff.setPassword(SecurityHash.getInstance().shaHash(request.getPassword()));
+//            staff.setPassword(request.getPassword());
             staff.setStatus(AppConstants.ACTIVE);
             staff.setResetPassword(false);
             if (!basicServices.update(staff)) {

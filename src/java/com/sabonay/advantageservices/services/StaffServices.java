@@ -1,11 +1,15 @@
 package com.sabonay.advantageservices.services;
 
+import com.ctrloption.security.SecurityHash;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatesetup.Region;
 import com.sabonay.advantageservices.entities.useraccounts.Department;
 import com.sabonay.advantageservices.entities.useraccounts.Staff;
 import com.sabonay.advantageservices.models.useraccount.StaffInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
+import com.sabonay.advantageservices.requestvalidators.StaffValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.restmodels.commons.GenericSearchRequest;
@@ -16,9 +20,6 @@ import com.sabonay.advantageservices.restmodels.useraccount.StaffRequest;
 import com.sabonay.advantageservices.utils.AppConstants;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
-import com.sabonay.advantageservices.requestvalidators.StaffValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -311,7 +312,7 @@ public class StaffServices {
         }
     }
 
-    public GenericResponse loginAccount(LoginAccountRequest request) throws IOException {
+    public GenericResponse createLoginAccount(LoginAccountRequest request) throws IOException {
         GenericResponse response = new GenericResponse();
         HeaderResponse headerResponse = new HeaderResponse();
         String msg;
@@ -382,7 +383,9 @@ public class StaffServices {
             loginAccount.setStatus(AppConstants.NEW);
             loginAccount.setUserRole(request.getUserRole());
             loginAccount.setResetPassword(true);
-            loginAccount.setPassword(request.getPassword());
+//            createLoginAccount.setPassword(request.getPassword());
+            loginAccount.setPassword(SecurityHash.getInstance().shaHash(request.getPassword()));
+
             loginAccount.setAccountCreatedBy(request.getCreatedBy());
             AppLogger.printPayload(log, "final payload create staff ", loginAccount);
             if (!basicServices.update(loginAccount)) {
@@ -453,7 +456,8 @@ public class StaffServices {
             }
             log.info("staff found password reset continue");
             loginAccount.setStatus(AppConstants.RESET);
-            loginAccount.setPassword(request.getPassword());
+//            createLoginAccount.setPassword(request.getPassword());
+            loginAccount.setPassword(SecurityHash.getInstance().shaHash(request.getPassword()));
             loginAccount.setResetPassword(true);
             if (!basicServices.update(loginAccount)) {
                 log.error("User password reset failed");
