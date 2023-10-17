@@ -106,33 +106,6 @@ public class OccupantProperty extends EntityCrud implements Serializable {
         return totalDuration;
     }
 
-    public String getDurationLeft1() {
-        if ((lastDateOfOccupancy != null)) {
-            Calendar currentCalendar = Calendar.getInstance();
-            Calendar lastCalendar = Calendar.getInstance();
-            lastCalendar.setTime(lastDateOfOccupancy);
-
-            int Cyr = currentCalendar.get(Calendar.YEAR);
-            int Cmnth = currentCalendar.get(Calendar.MONTH) + 1;
-            int Lyr = lastCalendar.get(Calendar.YEAR);
-            int Lmnth = lastCalendar.get(Calendar.MONTH) + 1;
-
-            if (lastCalendar.before(currentCalendar)) {
-                return "Exceeded";
-            }
-            if ((Lyr - Cyr == 0) && (Lmnth - Cmnth == 0)) {
-                //this will force the system to check for days left
-                return (lastCalendar.get(Calendar.DAY_OF_MONTH) - currentCalendar.get(Calendar.DAY_OF_MONTH)) + "day(s)";
-            }
-            if (Cmnth <= Lmnth) {
-                return (Lyr - Cyr) + " yr(s), " + (Lmnth - Cmnth) + " mnth(s)";
-            } else {
-                return ((Lyr - Cyr) - 1) + " yr(s), " + ((Cmnth - 12) + Lmnth) + " mnth(s)";
-            }
-        }
-        return "Unknown";
-    }
-
     public String getDurationLeft() {
         // Create Calendar instances and set the dates
         try {
@@ -154,17 +127,9 @@ public class OccupantProperty extends EntityCrud implements Serializable {
                 int months = (int) ((days % 365) / 30);
                 days = (int) ((days % 365) % 30);
                 String duration = "";
-                if (years > 0) {
-                    duration = years + " years ";
-                }
-                if (months > 0) {
-                    duration += months + " months ";
-                }
-                if (days > 0) {
-                    duration += days + " days ";
-                }
-//        duration = years + " years " + months + " months " + days + " days";
-                // Return the result as an array
+                duration = years <= 1 ? years + " year " : years + " years ";
+                duration += months <= 1 ? months + " month " : months + " months ";
+                duration += days <= 1 ? days + " day " : months + " days ";
                 return duration;
             }
         } catch (Exception e) {
@@ -179,16 +144,13 @@ public class OccupantProperty extends EntityCrud implements Serializable {
             Calendar currentCalendar = Calendar.getInstance();
             lastCalendar.setTime(lastDateOfOccupancy);
             int outcome = lastCalendar.compareTo(currentCalendar);
-            if (outcome > 0) {
-                return "Occupied";
-            } else {
-                return "Expired";
-            }
+            return outcome > 0 ? "Occupied" : "Expired";
         } else {
             return "N/A";
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -247,5 +209,6 @@ public class OccupantProperty extends EntityCrud implements Serializable {
     public void setLastDateOfOccupancy(Date lastDateOfOccupancy) {
         this.lastDateOfOccupancy = lastDateOfOccupancy;
     }
+//</editor-fold>
 
 }

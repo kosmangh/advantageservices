@@ -77,7 +77,6 @@ public class OccupantPropertyInfo extends OccupantPropertySuper {
             occupationType = data.getOccupationType();
             propertyId = data.getEstateProperty().getRecordId();
             propertyName = data.getEstateProperty().getPropertyName();
-            totalDuration = data.getTotalDuration();
             createdBy = data.getCreatedBy();
             createdDate = DateTimeUtils.formatDate(data.getCreatedDate(), DateTimeUtils.PATTERN_DATE_AND_TIME);
             lastModifiedBy = data.getLastModifiedBy();
