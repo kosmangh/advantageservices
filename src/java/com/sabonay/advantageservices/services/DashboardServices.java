@@ -55,7 +55,7 @@ public class DashboardServices extends CrudController implements Serializable {
         setEnviroment(Enviroment.JAVA_EE);
     }
 
-    public DashboardSummaryResponse getDashboardSummaryOld(GenericSearchRequest request) throws IOException {
+    public DashboardSummaryResponse getDashboardSummaryold(GenericSearchRequest request) throws IOException {
 
         DashboardSummaryResponse response = new DashboardSummaryResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -208,15 +208,16 @@ public class DashboardServices extends CrudController implements Serializable {
 
             List<EstateDashboardSummary> estateSummaryList = new ArrayList<>();
             double totalEstateSize = 0.0, totalBlkSize = 0.0, totalPropsSize = 0.0;
-            int overAllTotalBlks = 0, overAllTotalProps = 0, totalInactiveProp = 0;
-            int totalEstateOccupied = 0, totalBlockedOccupied = 0, totalOccupiedProperties = 0;
+            int overAllTotalBlks = 0, overAllTotalProps = 0, totalInactiveProp = 0, totalOccupiedProperties = 0, totalProps = 0;
+            int overAllTotalEstateOccupied = 0, overAllTotalBlockedOccupied = 0, overAllTotalOccupiedProperties = 0;
+
             for (Estate eachEstate : listOfEstates) {
                 totalEstateSize += eachEstate.getLandSize();
 
                 List<OccupantProperty> occupiedEstates
                         = getOccupiedPropertiesByEstate(EntityFields._estate_block_property, eachEstate.getRecordId());
                 if (!occupiedEstates.isEmpty()) {
-                    totalEstateOccupied += 1;
+                    overAllTotalEstateOccupied += 1;
                 }
 
                 listOfBlocks = basicServices.
@@ -234,16 +235,17 @@ public class DashboardServices extends CrudController implements Serializable {
                     //Sums total occupied blocks
                     int totalOccupied = 0;
                     totalOccupied = (int) occupiedEstates.parallelStream()
-                            .filter(eachOccupiedEstate -> eachOccupiedEstate.getEstateProperty().getEstateBlock().getRecordId().equals(eachBlk.getRecordId()))
+                            .filter(eachOccupiedEstate -> eachOccupiedEstate.getEstateProperty().getEstateBlock().getRecordId().toUpperCase().equals(eachBlk.getRecordId().toUpperCase()))
                             .count();
                     if (totalOccupied > 0) {
-                        totalBlockedOccupied += 1;
+                        overAllTotalBlockedOccupied += 1;
                     }
 
                     //Gets each blocks's property
                     listOfproperties = basicServices.
                             searchRecordsStrict(EstateProperty.class, EntityFields._estateBlock, eachBlk.getRecordId());
                     overAllTotalProps += listOfproperties.size();
+                    totalProps += listOfproperties.size();
 
                     for (EstateProperty eachProp : listOfproperties) {
                         totalPropsSize += eachProp.getPropertyLandSize();
@@ -251,37 +253,37 @@ public class DashboardServices extends CrudController implements Serializable {
                         if (eachProp.isBlocked()) {
                             totalInactiveProp += 1;
                         }
-
-//                        List<OccupantProperty> occupiedProperties
-//                                = getOccupiedPropertiesByEstate(EntityFields._property, eachProp.getRecordId());
-//                        if (!occupiedProperties.isEmpty()) {
-//                            totalOccupiedProperties += 1;
-//                        }
-
-                        //sums occupied properties
                         totalOccupied = 0;
                         totalOccupied = (int) occupiedEstates.parallelStream()
-                                .filter(eachOccupiedEstate -> eachOccupiedEstate.getEstateProperty().getRecordId().equals(eachProp.getRecordId()))
+                                .filter(eachOccupiedEstate -> eachOccupiedEstate.getEstateProperty().getRecordId().toUpperCase().trim().equals(eachProp.getRecordId().toUpperCase().trim()))
                                 .count();
+                        log.info(" total property occupied for " + eachProp.getPropertyName() + " " + totalOccupied);
                         if (totalOccupied > 0) {
                             totalOccupiedProperties += 1;
+                            overAllTotalOccupiedProperties += 1;
+                            break;
                         }
                     }
-
                 }
+                log.info(" total estate occupied for " + eachEstate.getEstateName() + " " + totalOccupiedProperties);
 
                 EstateDashboardSummary eds = new EstateDashboardSummary();
 
                 eds.setEstateName(eachEstate.getEstateName());
                 eds.setRecordId(eachEstate.getRecordId());
                 eds.setBlocks(listOfBlocks.size());
-                eds.setProperties(overAllTotalProps);
+                eds.setProperties(totalProps);
 
                 eds.setAllocatedProperties(totalOccupiedProperties);
-                eds.setAvailableProperties(overAllTotalProps - totalOccupiedProperties);
+                eds.setAvailableProperties(eds.getProperties() - totalOccupiedProperties);
                 eds.setInactiveProperties(totalInactiveProp);
 
                 estateSummaryList.add(eds);
+                totalOccupiedProperties = 0;
+                totalInactiveProp = 0;
+                totalProps = 0;
+                listOfBlocks.clear();
+                listOfproperties.clear();
 
             }
 
@@ -290,14 +292,14 @@ public class DashboardServices extends CrudController implements Serializable {
             response.setTotalBlockSize(totalBlkSize);
             response.setTotalPropertySize(totalPropsSize);
 
-            response.setOccupiedEstates(totalEstateOccupied);
-            response.setAvailableEstates(listOfEstates.size() - totalEstateOccupied);
+            response.setOccupiedEstates(overAllTotalEstateOccupied);
+            response.setAvailableEstates(listOfEstates.size() - overAllTotalEstateOccupied);
 
-            response.setOccupiedBlocks(totalBlockedOccupied);
-            response.setAvailableBlocks(overAllTotalBlks - totalBlockedOccupied);
-
-            response.setOccupiedProperties(totalOccupiedProperties);
-            response.setAvailableProperties(overAllTotalProps - totalOccupiedProperties);
+            response.setOccupiedBlocks(overAllTotalBlockedOccupied);
+            response.setAvailableBlocks(overAllTotalBlks - overAllTotalBlockedOccupied);
+//
+            response.setOccupiedProperties(overAllTotalOccupiedProperties);
+            response.setAvailableProperties(overAllTotalProps - overAllTotalOccupiedProperties);
 
             response.setEstateSummary(estateSummaryList);
 
