@@ -261,7 +261,7 @@ public class DashboardServices extends CrudController implements Serializable {
                         if (totalOccupied > 0) {
                             totalOccupiedProperties += 1;
                             overAllTotalOccupiedProperties += 1;
-                            break;
+//                            break;
                         }
                     }
                 }
