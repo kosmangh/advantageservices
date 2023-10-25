@@ -215,7 +215,7 @@ public class AuthServices implements Serializable {
             log.info("Passed validation,about to save company details");
 
             AuditLog auditLog = new AuditLog();
-            auditLog.setRecordId(IdGeneratorServices.generateLongUniqueId());
+            auditLog.setRecordId(IdGeneratorServices.generateLongUniqueId() + "/" + request.getUsername());
             auditLog.setIpAddress(request.getHeaderRequest().getIpAddress());
             auditLog.setUserActivity(request.getUserActivity());
             auditLog.setUsername(request.getUsername());
