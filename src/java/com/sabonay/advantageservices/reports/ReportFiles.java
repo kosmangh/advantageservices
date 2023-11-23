@@ -10,10 +10,13 @@ package com.sabonay.advantageservices.reports;
  */
 public class ReportFiles {
 
-//    private static final String REPORT_BASE_DIR = "/com/ctrloption/bolareportservices/reports/";
-    private static final String REPORT_BASE_DIR = "/com/ctrloption/bolareportservices/reports/general/";
+    private static final String REPORT_BASE_DIR = "/com/sabonay/advantageservices/reports/";
+
     private static final String GENERAL_REPORTS = REPORT_BASE_DIR + "general/";
-    public static final String revenue_collection_summary_report = REPORT_BASE_DIR + "revenue_collection_summary.jasper";
+    public static final String SHC_LOGO = REPORT_BASE_DIR + "images/shc_logo.jpg";
+    public static final String COAT_OF_ARMS = REPORT_BASE_DIR + "images/coat_of_arms.png";
+
+    public static final String DEMAND_NOTICE_REPORT = REPORT_BASE_DIR + "demand-notice.jasper";
     private static final String TEMPLATES = REPORT_BASE_DIR + "templates/";
     public static String header_portrait_template = TEMPLATES + "header_portrait.jasper";
     public static String club_header_portrait_template = TEMPLATES + "club_header_portrait.jasper";

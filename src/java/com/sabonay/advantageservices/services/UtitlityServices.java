@@ -306,6 +306,35 @@ public class UtitlityServices extends CrudController implements Serializable {
         return null;
     }
 
+    public List<PropertyLedgerInfo> getAllOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
+        try {
+            String msg = "";
+            AppLogger.printPayload(log, "getOccupantPropertyLedgerEntries request ", request);
+            List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
+//            builder.addStringQryParam(request.getSearchBy(), request.getSearchValue(), QryBuilder.ComparismCriteria.LIKE);
+            builder.addStringQryParam(EntityFields._occupant, request.getOccupantId(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, request.getPropertyId(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addObjectParam(EntityFields.deleted, false);
+            builder.orderByDesc(EntityFields.dateOfRecordEntry);
+            log.info(" getOccupantPropertyLedgerEntries " + builder.getQryInfo());
+            listOfPropertyLedgers = builder.buildQry().getResultList();
+            if (null == listOfPropertyLedgers) {
+                return null;
+            }
+            log.info("total ledgers entries retrieved " + listOfPropertyLedgers.size());
+            List<PropertyLedgerInfo> ledgers = new ArrayList<>();
+            if (!listOfPropertyLedgers.isEmpty()) {
+                for (PropertyLedger eachOne : listOfPropertyLedgers) {
+                    ledgers.add(new PropertyLedgerInfo(eachOne));
+                }
+            }
+            return ledgers;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "getOccupantPropertyLedgerEntries IOException");
+            return null;
+        }
+    }
     public List<PropertyLedgerInfo> getOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
@@ -448,6 +477,46 @@ public class UtitlityServices extends CrudController implements Serializable {
             builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
             builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
             builder.addDateRange(dateRange, EntityFields.dateOfRecordEntry);
+            builder.addObjectParam(EntityFields.deleted, false);
+            listOfPropertyLedgers = builder.buildQry().getResultList();
+            log.info("total occupantCurrentBalWithinDateRange " + listOfPropertyLedgers.size());
+
+            Double[] totals = new Double[3];
+            if (listOfPropertyLedgers.isEmpty()) {
+                totals[0] = 0.0;
+                totals[1] = 0.0;
+                totals[2] = 0.0;
+                return totals;
+            }
+            Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
+            for (PropertyLedger eachOne : listOfPropertyLedgers) {
+                if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
+                    totalCredit += eachOne.getAmountInvolved();
+                } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
+                    totalDebit += eachOne.getAmountInvolved();
+                }
+            }
+            log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
+            balance = totalDebit - totalCredit;
+            log.info(" current balance: " + balance);
+            totals[0] = totalDebit;
+            totals[1] = totalCredit;
+            totals[2] = balance;
+            return totals;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing occupantCurrentBal request");
+            return null;
+        }
+    }
+    public Double[] allOccupantCurrentBal(String occupantId, String propertyId) {
+        try {
+
+            List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
+//            DateRange dateRange = new DateRange(startDate, endDate);
+            QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
+            builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
+//            builder.addDateRange(dateRange, EntityFields.dateOfRecordEntry);
             builder.addObjectParam(EntityFields.deleted, false);
             listOfPropertyLedgers = builder.buildQry().getResultList();
             log.info("total occupantCurrentBalWithinDateRange " + listOfPropertyLedgers.size());

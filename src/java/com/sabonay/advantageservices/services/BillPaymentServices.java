@@ -169,6 +169,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
         }
     }
 
+
     public PropertyLedgerEntriesResponse fetchOccupantLedger(PropertyLedgerEntriesRequest request) throws IOException {
         PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -221,7 +222,57 @@ public class BillPaymentServices extends CrudController implements Serializable 
             return response;
         }
     }
-
+    public PropertyLedgerEntriesResponse fetchAllOccupantLedger(PropertyLedgerEntriesRequest request) throws IOException {
+        PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
+        HeaderResponse headerResponse = new HeaderResponse();
+        String msg;
+        try {
+            headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
+            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                msg = headerResponse.getResponseMessage();
+                headerResponse.setResponseCode(headerResponse.getResponseCode());
+                headerResponse.setResponseMessage(msg);
+                response.setHeaderResponse(headerResponse);
+                AppLogger.printPayload(log, msg, headerResponse);
+                return response;
+            }
+            log.info("about to billPaymentRequest");
+            headerResponse = BillPaymentValidator.validatePropetyLedgerEntriesRequest(request);
+            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                log.error("invalid rental bill request ");
+                msg = headerResponse.getResponseMessage();
+                headerResponse.setResponseCode(headerResponse.getResponseCode());
+                headerResponse.setResponseMessage(msg);
+                response.setHeaderResponse(headerResponse);
+                AppLogger.printPayload(log, msg, headerResponse);
+                return response;
+            }
+            //list of entries
+            List<PropertyLedgerInfo> listOfPropertyLedgers = utitlityServices.getAllOccupantPropertyLedgerEntries(request);
+            if (null == listOfPropertyLedgers) {
+                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+                return response;
+            }
+            log.info("listOfPropertyLedgers size " + listOfPropertyLedgers.size());
+            response.setPropertyLedgers(listOfPropertyLedgers);
+            //current balance
+            Double currentBal = utitlityServices.occupantCurrentBal(request.getOccupantId(), request.getPropertyId());
+            response.setCurrentBalance(currentBal);
+            Double[] entriesBalances = utitlityServices.allOccupantCurrentBal(request.getOccupantId(), request.getPropertyId());
+            response.setTotalCredit(entriesBalances[1]);
+            response.setTotalDebit(entriesBalances[0]);
+            //outstanding bal for DR ledgers
+            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
+            headerResponse.setResponseMessage(MsgFormatter.sentenceCase(ResponseCodes.SUCCESS));
+            response.setHeaderResponse(headerResponse);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "processRentalBillRequest IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        }
+    }
     public PropertyLedgerEntriesResponse fetchBillPayments(PropertyLedgerEntriesRequest request) throws IOException {
         PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
         HeaderResponse headerResponse = new HeaderResponse();

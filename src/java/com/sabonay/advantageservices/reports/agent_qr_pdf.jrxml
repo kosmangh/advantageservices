@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pdf_qr" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8ac048ca-607b-40d8-bb79-354a7888995e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="xpresspoint" class="java.io.InputStream"/>
+	<parameter name="mastervisa" class="java.io.InputStream"/>
+	<parameter name="agentName" class="java.lang.String"/>
+	<parameter name="agentCode" class="java.lang.String"/>
+	<parameter name="terminalId" class="java.lang.String"/>
+	<parameter name="poweredBy" class="java.lang.String"/>
+	<parameter name="ecobank" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="qrcode" class="java.io.InputStream"/>
+	<field name="terminalId" class="java.lang.String"/>
+	<field name="merchantName" class="java.lang.String"/>
+	<field name="terminalName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="562" splitType="Stretch">
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="196" y="4" width="170" height="98" uuid="8175d546-4606-4c90-bd63-101e4bc0e7b4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{xpresspoint}]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="183" y="186" width="195" height="209" uuid="02f3005d-bd7c-4458-be9d-6ea319470623"/>
+				<imageExpression><![CDATA[$F{qrcode}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement key="" mode="Opaque" x="102" y="115" width="176" height="20" uuid="a0425492-cc3a-403e-a180-9c4fcc567c9b"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{agentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="116" width="275" height="20" uuid="9c48d094-65e9-4923-a307-64f0563712d5"/>
+				<box leftPadding="3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{merchantName}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" isUsingCache="true" isLazy="true" onErrorType="Blank">
+				<reportElement x="211" y="495" width="130" height="40" uuid="d39b83df-03ae-4195-a9a3-18d2c24208d4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{ecobank}]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame" isUsingCache="true" isLazy="true" onErrorType="Blank">
+				<reportElement x="217" y="430" width="120" height="52" uuid="f1a685a8-ed18-4d21-ade9-4042ceffc344">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{mastervisa}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement key="" mode="Opaque" x="102" y="144" width="176" height="20" uuid="d3095f70-a249-4b14-907d-aad7194793c5"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{agentCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="145" width="275" height="20" uuid="82710c33-7e29-4bd8-8150-05570dc00736"/>
+				<box leftPadding="3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{terminalId}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

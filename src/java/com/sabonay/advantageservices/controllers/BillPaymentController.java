@@ -85,6 +85,31 @@ public class BillPaymentController implements Serializable {
 
         }
     }
+    
+    @POST
+    @Path(value = "/allpropertledgerentries")
+    public PropertyLedgerEntriesResponse fetchAllPropertyLedgerEntries(PropertyLedgerEntriesRequest request) {
+        log.info("inside fetchPropertyLedgerEntries method");
+        long startTime = System.currentTimeMillis();
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
+        try {
+            AppLogger.printPayload(log, "PropertyLedgerEntriesRequest ", request);
+            response = billPaymentServices.fetchAllOccupantLedger(request);
+            AppLogger.printPayload(log, "PropertyLedgerEntriesResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "fetchPropertyLedgerEntries IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            log.info("Execution time for " + request.getHeaderRequest().getRequestType() + " : " + executionTime + " milliseconds");
+            MDC.remove("requestid");
+
+        }
+    }
 
     @POST
     @Path(value = "/billpayments")
