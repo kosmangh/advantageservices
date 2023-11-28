@@ -10,6 +10,7 @@ import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatebilling.PropertyCharge;
 import com.sabonay.advantageservices.entities.estatebilling.PropertyLedger;
 import com.sabonay.advantageservices.entities.estatesetup.EstateProperty;
+import com.sabonay.advantageservices.entities.occupancy.Occupant;
 import com.sabonay.advantageservices.entities.occupancy.OccupantProperty;
 import com.sabonay.advantageservices.models.DataFetchType;
 import com.sabonay.advantageservices.models.estatebilling.PropertyLedgerInfo;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -306,6 +308,22 @@ public class UtitlityServices extends CrudController implements Serializable {
         return null;
     }
 
+    public PropertyLedger generateDemandNotice(String estateId, int leadgerYear) {
+        PropertyLedger epl = null;
+        String qry = "SELECT pl FROM PropertyLedger pl "
+                + "WHERE pl.debitCreditEntry = '" + DebitCredit.DEBIT.getLabel() + "' "
+                + "AND pl.estateProperty.recordId = '" + estateId + "' "
+                + "AND pl.firstDateOfOccupancy <=:checkDate  "
+                + "ORDER BY pl.dateOfRecordEntry DESC";
+        try {
+            epl = (PropertyLedger) em.createQuery(qry).setMaxResults(1).setFirstResult(0).getSingleResult();
+            return epl;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error getting lastDebitLedgerEntryForProperty");
+        }
+        return null;
+    }
+
     public List<PropertyLedgerInfo> getAllOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
@@ -335,6 +353,7 @@ public class UtitlityServices extends CrudController implements Serializable {
             return null;
         }
     }
+
     public List<PropertyLedgerInfo> getOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
@@ -508,6 +527,7 @@ public class UtitlityServices extends CrudController implements Serializable {
             return null;
         }
     }
+
     public Double[] allOccupantCurrentBal(String occupantId, String propertyId) {
         try {
 
@@ -569,6 +589,102 @@ public class UtitlityServices extends CrudController implements Serializable {
             double balance = result[2] != null ? (double) result[2] : 0.0;
             log.info("debitTotal: " + debitTotal + " creditTotal: " + creditTotal + " balance: " + balance);
             return new Double[]{creditTotal, debitTotal, balance};
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing occupantCurrentBal request");
+            return null;
+        }
+    }
+
+    public OccupantProperty getOccupantProperty(String occupantId, String propertyId) {
+        try {
+            QryBuilder builder = new QryBuilder(em, OccupantProperty.class);
+            builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addObjectParam(EntityFields.deleted, false);
+            log.info(" getOccupantProperty " + builder.getQryInfo());
+            List<OccupantProperty> list = new ArrayList<>();
+            list = builder.buildQry().getResultList();
+            if (list.isEmpty()) {
+                return null;
+            }
+            AppLogger.info(log, "total properties for occupantId " + occupantId + " propertyId " + propertyId + " is " + list.size());
+            return list.get(0);
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing getOccupantProperty qry");
+            return null;
+        }
+    }
+
+    public OccupantProperty getOccupantPropertyNew(Occupant occupant, EstateProperty property) {
+        try {
+            QryBuilder builder = new QryBuilder(em, OccupantProperty.class);
+            builder.addObjectParam(EntityFields.occupant, occupant);
+            builder.addObjectParam(EntityFields.estateProperty, property);
+            builder.addObjectParam(EntityFields.deleted, false);
+            log.info(" getOccupantProperty " + builder.getQryInfo());
+            List<OccupantProperty> list = new ArrayList<>();
+            list = builder.buildQry().getResultList();
+            if (list.isEmpty()) {
+                return null;
+            }
+            AppLogger.info(log, "total properties for occupantId " + occupant.getRecordId() + " propertyId " + property.getRecordId() + " is " + list.size());
+            return list.get(0);
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing getOccupantProperty qry");
+            return null;
+        }
+    }
+
+    public Double[] getPreviousAndCurrentBalances4DemandNotice(String occupantId, String propertyId, Integer ledgerYear) {
+        try {
+            List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
+//            
+            builder.addNumberParam(EntityFields.ledgerYear, ledgerYear, QryBuilder.ComparismCriteria.LESS_THAN_OR_EQUAL);
+            builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addObjectParam(EntityFields.deleted, false);
+            log.info(" getLedgerBalance4DemandNotice " + builder.getQryInfo());
+            listOfPropertyLedgers = builder.buildQry().getResultList();
+            log.info("total occupant ledgers " + listOfPropertyLedgers.size());
+            Double[] totals = new Double[2];
+            if (listOfPropertyLedgers.isEmpty()) {
+                totals[0] = 0.0;
+                totals[1] = 0.0;
+                return totals;
+            }
+            Double arrearsTotalDebit = 0.0, arrearsTotalCredit = 0.0, arrearsbalance = 0.0;
+            Double currentTotalDebit = 0.0, currentTotalCredit = 0.0, currentBalance = 0.0;
+            for (PropertyLedger eachOne : listOfPropertyLedgers) {
+
+                //Selected year 
+                if (Objects.equals(ledgerYear, eachOne.getLedgerYear())) {
+
+                    if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
+                        currentTotalCredit += eachOne.getAmountInvolved();
+                    } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
+                        currentTotalDebit += eachOne.getAmountInvolved();
+                    }
+
+                } else {
+
+                    if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
+                        arrearsTotalCredit += eachOne.getAmountInvolved();
+                    } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
+                        arrearsTotalDebit += eachOne.getAmountInvolved();
+                    }
+
+                }
+
+            }
+            log.info(" currentTotalDebit: " + currentTotalDebit + " currentTotalCredit: " + currentTotalCredit);
+            log.info(" arrearsTotalDebit: " + arrearsTotalDebit + " arrearsTotalCredit: " + arrearsTotalCredit);
+            currentBalance = currentTotalDebit - currentTotalCredit;
+            arrearsbalance = arrearsTotalDebit - arrearsTotalCredit;
+            log.info(" current balance: " + arrearsbalance);
+            totals[0] = currentBalance;
+            totals[1] = arrearsbalance;
+            return totals;
         } catch (Exception e) {
             AppLogger.error(log, e, "Error processing occupantCurrentBal request");
             return null;

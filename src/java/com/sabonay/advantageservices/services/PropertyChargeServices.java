@@ -107,6 +107,7 @@ public class PropertyChargeServices extends CrudController implements Serializab
             createPropertyCharge.setRecordId(IdGeneratorServices.getPropertyChargeId(createPropertyCharge));
             createPropertyCharge.setCreatedBy(request.getCreatedBy());
             createPropertyCharge.setCreatedDate(new Date());
+            createPropertyCharge.setDeleted(false);
             log.info("Passed validation,about to save PropertyCharge details");
             AppLogger.printPayload(log, "final payload create estate property ", createPropertyCharge);
             PropertyCharge saved = basicServices.save(createPropertyCharge);

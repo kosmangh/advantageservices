@@ -27,6 +27,8 @@ public class EntityFields {
     public static String landSize = "landSize";
     public static String blockSize = "blockSize";
     public static String propertyLandSize = "propertyLandSize";
+    public static String occupant = "occupant";
+    public static String estateProperty = "estateProperty";
 
 
     public static final String _occupantName = "occupant.occupantName";

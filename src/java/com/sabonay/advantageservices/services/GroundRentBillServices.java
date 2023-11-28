@@ -117,7 +117,7 @@ public class GroundRentBillServices extends CrudController implements Serializab
             List<OccupantProperty> listOfOccupantProperties = utitlityServices.getOccupantProperties4Billing(dataFetchType);
             log.info("Total records for occupant for processGroundRentBill " + listOfOccupantProperties.size());
             if (null == listOfOccupantProperties) {
-//                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
                 AppLogger.printPayload(log, "", response);
                 return response;
             }
@@ -233,5 +233,6 @@ public class GroundRentBillServices extends CrudController implements Serializab
             return response;
         }
     }
+
 
 }

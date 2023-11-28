@@ -1,11 +1,15 @@
 package com.sabonay.advantageservices.controllers;
 
+import com.sabonay.advantageservices.entities.estatesetup.EstateZone;
 import com.sabonay.advantageservices.models.reports.DemandNoticeInfo;
 import com.sabonay.advantageservices.reports.ReportFiles;
-import com.sabonay.advantageservices.restmodels.reports.DemandNoticeRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeRequest;
+import com.sabonay.advantageservices.services.BasicServices;
+import com.sabonay.advantageservices.services.BillPaymentServices;
 import com.sabonay.advantageservices.services.ResportServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +41,16 @@ public class ReportsController {
 
     @Inject
     private ResportServices resportServices;
+    @Inject
+    private BasicServices basicJPA;
+    @Inject
+    private BillPaymentServices billPaymentServices;
 
     @POST
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/generatedemandnoticereport")
-    public Response generateReportPDF(DemandNoticeRequest request) {
+    public Response generateReportPDF(DemandNoticeRequest request) throws IOException {
 
         try {
             System.out.println("Printing");
@@ -53,20 +61,30 @@ public class ReportsController {
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportInputStream);
 
             log.info("setting parameters");
-            // Set report parameters
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("zoneName", "Western Zone");
-            parameters.put("zoneAddress", "P O Box X 15 FNT,Effiekuma - Takoradi");
-            parameters.put("zoneContact", "032858678878 / 233245293945");
-            parameters.put("zoneEmail", "info@statehousing.gov.gh");
-            parameters.put("zoneWebsite", "www.statehousing.gov.gh");
+            //find the zone
+            EstateZone zone = basicJPA.find(EstateZone.class, request.getHeaderRequest().getZone());
 
-            parameters.put("reportTitle", "GROUND RENT DEMAND NOTICE");
+            //get demand notice list
+            // Set report parameters
+            String contacts = zone.getContactNo();
+            if (null != zone.getOtherContactNo() || !zone.getOtherContactNo().isEmpty()) {
+                contacts += " / " + zone.getOtherContactNo();
+            }
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("zoneName", zone.getZoneName());
+            parameters.put("zoneAddress", zone.getAddress());
+            parameters.put("zoneContact", contacts);
+            parameters.put("zoneEmail", zone.getEmail());
+            parameters.put("zoneWebsite", zone.getWebsite());
+
+            parameters.put("reportTitle", "GROUND RENT DEMAND NOTICE FOR " + request.getChargeYear());
             parameters.put("footerTitle", "State Housing Company Limited");
             parameters.put("printedBy", "Daud");
-            parameters.put("noticeHeader", "Please TAKE NOTICE that ground rent in respect of the under-mentioned property for the year ending 31-December 2022 became due on 01-January 2022.");
-            parameters.put("noticeA", "Ground Rents are payable to an accredited official of the State Housing Company Limited or any GCB Bank Takoradi Main branch,"
-                    + " A/C No. - 4011130002468), Clients who pay through the bank should present their deposit Slip for their receipt later from our Main office."
+            parameters.put("noticeHeader", "Please TAKE NOTICE that ground rent in respect of the under-mentioned property for the year ending "
+                    + "31-December " + request.getChargeYear() + " became due on 01-January " + request.getChargeYear() + ".");
+            parameters.put("noticeA", "Ground Rents are payable to an accredited official of the State Housing Company Limited or any"
+                    + " <b>" + zone.getBankName() + " ( " + zone.getBankBranch() + ","
+                    + " A/C No. - " + zone.getAccountNo() + " )</b>, Clients who pay through the bank should present their deposit Slip for their receipt later from our Main office."
                     + " (Please indicate your File No, on the deposit Slip).\nAlternatively, you may wish to settle the Total Amount Due at the State Housing Co, Ltd., Main Office, Elfiakuma Now Site, Takoradi Technical University - Time Ent. Road");
             parameters.put("noticeB", "The company reserves the right to take any action including the law courts to recover all ground rent, one month after it became due together with costs without further notice.");
             parameters.put("noticeC", "In accordance with the lease com payment of the ground rent reserved constitute a breach of covenant whereby the company is entitled forthwith to re-enter and terminate the lease without any right of compensation to you.");
@@ -74,7 +92,7 @@ public class ReportsController {
             parameters.put("shc_logo", getClass().getResourceAsStream(ReportFiles.SHC_LOGO));
             parameters.put("coat_of_arms", getClass().getResourceAsStream(ReportFiles.COAT_OF_ARMS));
 
-            List<DemandNoticeInfo> summaryResponse = resportServices.generateDemandNotices(10);
+            List<DemandNoticeInfo> summaryResponse = billPaymentServices.generateDemandNotice(request).getDemandNotices();
             AppLogger.printPayload(log, "data reponse", summaryResponse);
 
             // Create a data source for the report

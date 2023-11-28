@@ -30,8 +30,26 @@ public class EstateZone extends EntityCrud implements Serializable {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "contactNo")
+    @Column(name = "contact_no")
     private String contactNo;
+
+    @Column(name = "other_contact_no")
+    private String otherContactNo;
+
+    @Column(name = "account_no")
+    private String accountNo;
+
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "bank_branch")
+    private String bankBranch;
+
+    @Column(name = "website")
+    private String website;
+
+    @Column(name = "email")
+    private String email;
 
     @Override
     public int hashCode() {
@@ -65,6 +83,54 @@ public class EstateZone extends EntityCrud implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public String getOtherContactNo() {
+        return otherContactNo;
+    }
+
+    public void setOtherContactNo(String otherContactNo) {
+        this.otherContactNo = otherContactNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankBranch() {
+        return bankBranch;
+    }
+
+    public void setBankBranch(String bankBranch) {
+        this.bankBranch = bankBranch;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getContactNo() {

@@ -1,12 +1,20 @@
 package com.sabonay.advantageservices.models.reports;
 
+import com.sabonay.advantageservices.entities.estatebilling.PropertyLedger;
+import com.sabonay.advantageservices.utils.AppLogger;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author dainoo
  */
 public class DemandNoticeInfo {
+
+    private static final Logger log = Logger.getLogger(DemandNoticeInfo.class.getName());
+
     private String lessee;
     private String streetName;
     private String fileNo;
@@ -16,8 +24,32 @@ public class DemandNoticeInfo {
     private Double currentCharge;
     private Double arrears;
     private Double totalAmountDue;
-    private Date  lesseExpiryDate;
-    
+    private Date lesseExpiryDate;
+
+    public DemandNoticeInfo(PropertyLedger ledger, Double currentAmount, Double previousArrears, Date expiryDate) {
+        try {
+            if (Objects.isNull(ledger.getOccupant())) {
+                lessee = "Name not found";
+            } else {
+                lessee = ledger.getOccupant().getOccupantName();
+            }
+            streetName = ledger.getEstateProperty().getEstateBlock().getBlockName();
+            fileNo = ledger.getEstateProperty().getPropertyName();
+            propertyNo = ledger.getEstateProperty().getPropertyNumber();
+            propertyClass = ledger.getEstateProperty().getEstateBlock().getEstate().getEstateClass().replaceAll("_", " ");
+            location = ledger.getEstateProperty().getEstateBlock().getEstate().getEstateName();
+            currentCharge = currentAmount;
+            arrears = previousArrears;
+            totalAmountDue = currentCharge + arrears;
+            lesseExpiryDate = Optional.ofNullable(expiryDate).orElse(null);
+        } catch (Exception e) {
+            AppLogger.error(log, e, "error processing " + lessee + "'s " + fileNo + " demand notice");
+        }
+    }
+
+    public DemandNoticeInfo() {
+    }
+
     //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public String getLessee() {
         return lessee;
@@ -99,6 +131,5 @@ public class DemandNoticeInfo {
         this.lesseExpiryDate = lesseExpiryDate;
     }
 //</editor-fold>
-    
-    
+
 }

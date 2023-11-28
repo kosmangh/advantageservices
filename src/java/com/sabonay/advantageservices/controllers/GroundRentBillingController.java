@@ -2,8 +2,8 @@ package com.sabonay.advantageservices.controllers;
 
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.restmodels.estatebilling.GroundRentBillListRequest;
-import com.sabonay.advantageservices.restmodels.estatebilling.GroundRentalBillListResponse;
 import com.sabonay.advantageservices.restmodels.estatebilling.GroundRentBillRequest;
+import com.sabonay.advantageservices.restmodels.estatebilling.GroundRentalBillListResponse;
 import com.sabonay.advantageservices.services.GroundRentBillServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
@@ -73,4 +73,5 @@ public class GroundRentBillingController implements Serializable {
             MDC.remove("requestid");
         }
     }
+
 }

@@ -1,6 +1,8 @@
 package com.sabonay.advantageservices.controllers;
 
 import com.sabonay.advantageservices.restmodels.billpayment.BillPaymentRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeResponse;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesResponse;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
@@ -133,6 +135,25 @@ public class BillPaymentController implements Serializable {
             log.info("Execution time for " + request.getHeaderRequest().getRequestType() + " : " + executionTime + " milliseconds");
             MDC.remove("requestid");
 
+        }
+    }
+
+    @POST
+    @Path(value = "/demandnotice")
+    public DemandNoticeResponse generateDemandNotice(DemandNoticeRequest request) {
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        DemandNoticeResponse response = new DemandNoticeResponse();
+        try {
+            AppLogger.printPayload(log, "DemandNoticeRequest ", request);
+            response = billPaymentServices.generateDemandNotice(request);
+            AppLogger.printPayload(log, "DemandNoticeResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "generateDemandNotice IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        } finally {
+            MDC.remove("requestid");
         }
     }
 }

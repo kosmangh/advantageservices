@@ -21,6 +21,12 @@ public class ZoneInfo extends CommonFields {
     private String remarks;
     private String address;
     private String contactNo;
+    private String otherContactNo;
+    private String accountNo;
+    private String bankName;
+    private String bankBranch;
+    private String website;
+    private String email;
 
     public ZoneInfo() {
     }
@@ -32,6 +38,12 @@ public class ZoneInfo extends CommonFields {
             this.remarks = data.getRemarks();
             this.address = data.getAddress();
             this.contactNo = data.getContactNo();
+            this.otherContactNo = data.getOtherContactNo();
+            this.accountNo = data.getAccountNo();
+            this.bankName = data.getBankName();
+            this.bankBranch = data.getBankBranch();
+            this.website = data.getWebsite();
+            this.email = data.getEmail();
             this.createdBy = data.getCreatedBy();
             this.createdDate = data.getCreatedDate();
             this.lastModifiedBy = data.getLastModifiedBy();
@@ -39,6 +51,55 @@ public class ZoneInfo extends CommonFields {
         } catch (Exception e) {
             AppLogger.error(log, e, "ZoneInfo constructor exeception");
         }
+    }
+
+//<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
+    public String getOtherContactNo() {
+        return otherContactNo;
+    }
+
+    public void setOtherContactNo(String otherContactNo) {
+        this.otherContactNo = otherContactNo;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankBranch() {
+        return bankBranch;
+    }
+
+    public void setBankBranch(String bankBranch) {
+        this.bankBranch = bankBranch;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getZoneName() {
@@ -72,5 +133,6 @@ public class ZoneInfo extends CommonFields {
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
     }
+//</editor-fold>
 
 }

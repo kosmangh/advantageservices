@@ -4,22 +4,29 @@ import com.ctrloption.constants.DebitCredit;
 import com.ctrloption.formating.NumberFormattingUtils;
 import com.ctrloption.jpa2.CrudController;
 import com.ctrloption.jpa2.Enviroment;
+import com.ctrloption.jpa2.QryBuilder;
 import com.ctrloption.utils.MsgFormatter;
 import com.sabonay.advantageservices.ResponseCodes;
+import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatebilling.BillPayment;
 import com.sabonay.advantageservices.entities.estatebilling.PropertyLedger;
 import com.sabonay.advantageservices.entities.estatesetup.EstateProperty;
 import com.sabonay.advantageservices.entities.occupancy.Occupant;
+import com.sabonay.advantageservices.entities.occupancy.OccupantProperty;
 import com.sabonay.advantageservices.models.estatebilling.PropertyLedgerInfo;
+import com.sabonay.advantageservices.models.reports.DemandNoticeInfo;
 import com.sabonay.advantageservices.requestvalidators.BillPaymentValidator;
 import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.billpayment.BillPaymentRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeResponse;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesResponse;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
+import com.sabonay.advantageservices.utils.enums.PaymentType;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -169,7 +177,6 @@ public class BillPaymentServices extends CrudController implements Serializable 
         }
     }
 
-
     public PropertyLedgerEntriesResponse fetchOccupantLedger(PropertyLedgerEntriesRequest request) throws IOException {
         PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -222,6 +229,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             return response;
         }
     }
+
     public PropertyLedgerEntriesResponse fetchAllOccupantLedger(PropertyLedgerEntriesRequest request) throws IOException {
         PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -273,6 +281,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             return response;
         }
     }
+
     public PropertyLedgerEntriesResponse fetchBillPayments(PropertyLedgerEntriesRequest request) throws IOException {
         PropertyLedgerEntriesResponse response = new PropertyLedgerEntriesResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -350,6 +359,104 @@ public class BillPaymentServices extends CrudController implements Serializable 
             return response;
         } catch (IOException e) {
             AppLogger.error(log, e, "processRentalBillRequest IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        }
+    }
+
+    public DemandNoticeResponse generateDemandNotice(DemandNoticeRequest request) throws IOException {
+        DemandNoticeResponse response = new DemandNoticeResponse();
+        HeaderResponse headerResponse = new HeaderResponse();
+        try {
+            headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
+            AppLogger.printPayload(log, "header validation response before", headerResponse);
+            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                response.setHeaderResponse(headerResponse);
+                return response;
+            }
+            String msg = "";
+            if (null == request.getSearchParameter()) {
+                msg = MsgFormatter.sentenceCase(ResponseCodes.SEARCH_BY_REQUIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                response.setHeaderResponse(headerResponse);
+                return response;
+            }
+            if (null == request.getSearchValue()) {
+                msg = MsgFormatter.sentenceCase(ResponseCodes.SEARCH_VALUE_REQUIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                response.setHeaderResponse(headerResponse);
+                return response;
+            }
+            if (null == request.getChargeYear()) {
+                msg = MsgFormatter.sentenceCase(ResponseCodes.RENT_YEAR_REQUIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                response.setHeaderResponse(headerResponse);
+                return response;
+            }
+
+            String search = "";
+            if (request.getSearchParameter().equalsIgnoreCase("BAB")) {
+                search = "estateProperty.estateBlock.recordId";
+            } else if (request.getSearchParameter().equalsIgnoreCase("NAM")) {
+                search = "occupant.occupantName";
+            } else if (request.getSearchParameter().equalsIgnoreCase("MOB")) {
+                search = "occupant.mobileNo";
+            } else if (request.getSearchParameter().equalsIgnoreCase("PNAM")) {
+                search = "estateProperty.propertyName";
+            } else if (request.getSearchParameter().equalsIgnoreCase("PNO")) {
+                search = "estateProperty.propertyNumber";
+            }
+
+            List<PropertyLedger> listOfGroundRentBills = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
+            builder.addStringQryParam(search, request.getSearchValue(), QryBuilder.ComparismCriteria.LIKE);
+            builder.addStringQryParam(EntityFields.paymentType, PaymentType.GROUND_RENT.getLabel(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addNumberParam(EntityFields.ledgerYear, request.getChargeYear(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addObjectParam(EntityFields.deleted, false);
+            log.info(" fetching ledgers " + builder.getQryInfo());
+            listOfGroundRentBills = builder.buildQry().getResultList();
+            if (null == listOfGroundRentBills) {
+                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+                return response;
+            }
+            log.info("total staff retrieved " + listOfGroundRentBills.size());
+            List<DemandNoticeInfo> listOfDemandNotices = new ArrayList<>();
+            Double[] totalLedgers;
+            Double totalArrears = 0.0, totalCurrentCharge = 0.0;
+            if (!listOfGroundRentBills.isEmpty()) {
+                for (PropertyLedger eachOne : listOfGroundRentBills) {
+                    OccupantProperty property = utitlityServices.getOccupantPropertyNew(eachOne.getOccupant(), eachOne.getEstateProperty());
+//                    AppLogger.printPayloadCompact(log, "property found: ", property);
+                    if (Objects.isNull(property)) {
+                    } else {
+                    totalLedgers = new Double[2];
+                    totalLedgers = utitlityServices.getPreviousAndCurrentBalances4DemandNotice(eachOne.getOccupant().getRecordId(), eachOne.getEstateProperty().getRecordId(), request.getChargeYear());
+                    totalCurrentCharge += totalLedgers[0];
+                    totalArrears += totalLedgers[1];
+                        listOfDemandNotices.add(new DemandNoticeInfo(eachOne, totalLedgers[0], totalLedgers[1], property.getLastDateOfOccupancy()));
+                    listOfDemandNotices.add(new DemandNoticeInfo(eachOne, totalLedgers[0], totalLedgers[1], new Date()));
+                    }
+
+                }
+            }
+            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
+            headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
+            response.setHeaderResponse(headerResponse);
+            response.setTotalCurrentCharge(totalCurrentCharge);
+            response.setTotalArrears(totalArrears);
+            response.setTotalAmountDue(totalArrears + totalCurrentCharge);
+
+//            for (DemandNoticeInfo eachOne : listOfDemandNotices) {
+//                OccupantProperty property = utitlityServices.getOccupantProperty(eachOne.getOccupant().getRecordId(), eachOne.getEstateProperty().getRecordId());
+//
+//            }
+            response.setDemandNotices(listOfDemandNotices);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "getdepartments IOException");
             response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
             return response;
         }
