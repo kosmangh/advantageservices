@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="branch list" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1aa47f74-3782-477c-ae51-13c05517c3fc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demand notice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1aa47f74-3782-477c-ae51-13c05517c3fc">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -35,6 +35,11 @@
 	<field name="currentCharge" class="java.lang.Double"/>
 	<field name="arrears" class="java.lang.Double"/>
 	<field name="totalAmountDue" class="java.lang.Double"/>
+	<field name="arrearsLabel" class="java.lang.String"/>
+	<field name="totalAmountDueLabel" class="java.lang.String"/>
+	<field name="currentChargeString" class="java.lang.String"/>
+	<field name="arrearsString" class="java.lang.String"/>
+	<field name="totalAmountDueString" class="java.lang.String"/>
 	<variable name="counter" class="java.lang.Integer" resetType="Group" resetGroup="collectorName" calculation="Count">
 		<variableExpression><![CDATA[$V{collectorName_COUNT}]]></variableExpression>
 	</variable>
@@ -55,7 +60,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 			</textField>
@@ -68,7 +73,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{lessee}.toUpperCase()]]></textFieldExpression>
 			</textField>
@@ -83,7 +88,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fileNo}]]></textFieldExpression>
 			</textField>
@@ -96,7 +101,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{streetName}.toUpperCase()]]></textFieldExpression>
 			</textField>
@@ -109,11 +114,11 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{propertyClass}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight" pattern="#,###.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="478" y="166" width="77" height="15" forecolor="#333333" uuid="ecc2cc84-aab1-42ce-9153-74e196b56eb8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -126,7 +131,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
 					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{currentCharge}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{currentChargeString}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="259" y="150" width="59" height="15" forecolor="#333333" uuid="b0eb7960-2e8e-4bb6-9c3e-fd7e08ed8848"/>
@@ -137,25 +142,11 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Calibri" size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{propertyNo}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="402" y="181" width="75" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="43de47d5-8ca1-4f34-9259-cb73e363318b"/>
-				<box topPadding="2" leftPadding="0" bottomPadding="2" rightPadding="2">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font fontName="Calibri" size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Arrears]]></text>
-			</staticText>
-			<textField textAdjust="StretchHeight" pattern="00.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="478" y="181" width="77" height="15" forecolor="#333333" uuid="cc929b0d-ef26-4c8f-bf64-551dd3569264">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -168,22 +159,8 @@
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{arrears}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{arrearsString}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="402" y="196" width="75" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="d088eaff-7f35-44c1-960b-3edf17370eaf"/>
-				<box topPadding="2" leftPadding="0" bottomPadding="2" rightPadding="2">
-					<pen lineWidth="0.0" lineStyle="Dotted"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font fontName="Calibri" size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total Amount Due]]></text>
-			</staticText>
 			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="478" y="212" width="77" height="15" forecolor="#333333" uuid="9de15170-b014-4df7-a664-ed95f78bd778">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -213,7 +190,7 @@
 				</textElement>
 				<text><![CDATA[Lesse Expiry Date]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight" pattern="#,###.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="478" y="197" width="77" height="15" forecolor="#333333" uuid="d2b2a51a-784e-46be-b2f6-9e363b8bf762">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -226,7 +203,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalAmountDue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalAmountDueString}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="220" width="115" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="691b0598-72de-44af-b3e0-02b45dae508e"/>
@@ -728,6 +705,34 @@
 				</textElement>
 				<text><![CDATA[Current Charge]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="390" y="181" width="89" height="15" backcolor="#FFFFFF" uuid="726e1eff-002b-4cca-aa27-b8edc2e958bf"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{arrearsLabel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="327" y="195" width="150" height="15" backcolor="#FFFFFF" uuid="ca772bf5-553a-4260-a9ed-08c2799af0c1"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalAmountDueLabel}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>

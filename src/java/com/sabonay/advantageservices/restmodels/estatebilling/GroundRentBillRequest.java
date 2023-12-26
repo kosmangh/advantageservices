@@ -19,6 +19,7 @@ public class GroundRentBillRequest {
     private String propertyUsage;
     private String createdBy;
     private String billingType;
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
 
     public HeaderRequest getHeaderRequest() {
         return headerRequest;
@@ -83,5 +84,6 @@ public class GroundRentBillRequest {
     public void setBillingType(String billingType) {
         this.billingType = billingType;
     }
+//</editor-fold>
 
 }

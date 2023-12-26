@@ -3,6 +3,7 @@ package com.sabonay.advantageservices.utils;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.restmodels.commons.HeaderRequest;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
+import com.sabonay.advantageservices.utils.enums.PaymentType;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
@@ -29,6 +30,27 @@ public class AppUtils {
     private static final Logger log = Logger.getLogger(AppUtils.class.getName());
 
     private static final String ALPHA_NUM_RAND = "1234567890";
+
+    public static String generateBillNarration(String billType, String billId, Integer billYear) {
+        try {
+            String narration = "";
+            if (billType.equals(PaymentType.GROUND_RENT.getLabel())) {
+                narration = "Ground rent for " + billYear;
+            } else {
+                //Gets the month from record id eg. "ADB-ADB/A-555555/HOUSE_RENT-DEBIT/2023#SEPTEMBER"
+                String[] parts = billId.split("#");
+                String month = parts[parts.length - 1].toLowerCase();
+                //capitalize the first letter of the month
+                month = month.substring(0, 1).toUpperCase() + month.substring(1);
+                narration = "House rent for " + month + "," + billYear;
+            }
+            return narration;
+
+        } catch (Exception e) {
+            AppLogger.error(log, e, "error generating narration");
+            return "error narration";
+        }
+    }
 
     public static String generateToken(int len) {
         StringBuilder sb = new StringBuilder(len);

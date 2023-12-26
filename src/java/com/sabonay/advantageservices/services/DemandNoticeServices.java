@@ -60,9 +60,9 @@ public class DemandNoticeServices extends CrudController implements Serializable
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
@@ -91,9 +91,9 @@ public class DemandNoticeServices extends CrudController implements Serializable
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
@@ -127,9 +127,9 @@ public class DemandNoticeServices extends CrudController implements Serializable
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);

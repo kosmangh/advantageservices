@@ -14,7 +14,7 @@ public class PropertyLedgerSuper {
     protected Date dateOfRecordEntry;
     protected Date dateOfRecordTransaction;
     protected String debitCreditEntry;
-    protected Double amountInvolved;
+    protected Double amountPaid;
     protected String receiptNumberIssued;
     protected String paymentFor;
     protected String payeeName;
@@ -31,6 +31,9 @@ public class PropertyLedgerSuper {
     protected String propertyId;
     protected String paymentType;
     protected String occupantId;
+    protected String recordId;
+    protected String bill;
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
 
     public Date getDateOfRecordEntry() {
         return dateOfRecordEntry;
@@ -42,6 +45,22 @@ public class PropertyLedgerSuper {
 
     public Date getDateOfRecordTransaction() {
         return dateOfRecordTransaction;
+    }
+
+    public Double getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(Double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
     }
 
     public void setDateOfRecordTransaction(Date dateOfRecordTransaction) {
@@ -56,12 +75,12 @@ public class PropertyLedgerSuper {
         this.debitCreditEntry = debitCreditEntry;
     }
 
-    public Double getAmountInvolved() {
-        return amountInvolved;
+    public Double getamountPaid() {
+        return amountPaid;
     }
 
-    public void setAmountInvolved(Double amountInvolved) {
-        this.amountInvolved = amountInvolved;
+    public void setamountPaid(Double amountPaid) {
+        this.amountPaid = amountPaid;
     }
 
     public String getReceiptNumberIssued() {
@@ -74,6 +93,14 @@ public class PropertyLedgerSuper {
 
     public String getPaymentFor() {
         return paymentFor;
+    }
+
+    public String getBill() {
+        return bill;
+    }
+
+    public void setBill(String bill) {
+        this.bill = bill;
     }
 
     public void setPaymentFor(String paymentFor) {
@@ -191,5 +218,6 @@ public class PropertyLedgerSuper {
     public void setOccupantId(String occupantId) {
         this.occupantId = occupantId;
     }
+//</editor-fold>
 
 }

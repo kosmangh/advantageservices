@@ -27,14 +27,17 @@ public class PropertyLedgerInfo extends PropertyLedgerSuper {
     private String lastModifiedBy;
     private String institutionalDisplayName;
     private String occupationType;
+    private Double billAmount;
+
     public PropertyLedgerInfo() {
         super();
     }
 
     public PropertyLedgerInfo(PropertyLedger data) {
         try {
-            amountInvolved = data.getAmountInvolved();
-
+            AppLogger.printPayload(log, " ledger bills details:: ", data.getBill());
+            recordId = data.getRecordId();
+            amountPaid = data.getamountPaid();
             dateOfRecordEntry = data.getDateOfRecordEntry();
             dateOfRecordTransaction = data.getDateOfRecordTransaction();
             debitCreditEntry = data.getDebitCreditEntry();
@@ -55,6 +58,8 @@ public class PropertyLedgerInfo extends PropertyLedgerSuper {
             propertyName = data.getEstateProperty().getPropertyName();
             propertyNo = data.getEstateProperty().getPropertyNumber();
             propertyUsage = data.getEstateProperty().getPropertyUsage();
+            bill = data.getBill().getRecordId();
+            billAmount = data.getBill().getBillAmount();
             createdBy = data.getCreatedBy();
             createdDate = DateTimeUtils.formatDate(data.getCreatedDate(), DateTimeUtils.PATTERN_DATE_AND_TIME);
             lastModifiedBy = data.getLastModifiedBy();
@@ -64,6 +69,7 @@ public class PropertyLedgerInfo extends PropertyLedgerSuper {
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public String getRegionName() {
         return regionName;
     }
@@ -90,6 +96,14 @@ public class PropertyLedgerInfo extends PropertyLedgerSuper {
 
     public String getPropertyNo() {
         return propertyNo;
+    }
+
+    public Double getBillAmount() {
+        return billAmount;
+    }
+
+    public void setBillAmount(Double billAmount) {
+        this.billAmount = billAmount;
     }
 
     public void setPropertyNo(String propertyNo) {
@@ -151,5 +165,6 @@ public class PropertyLedgerInfo extends PropertyLedgerSuper {
     public void setOccupationType(String occupationType) {
         this.occupationType = occupationType;
     }
+//</editor-fold>
 
 }

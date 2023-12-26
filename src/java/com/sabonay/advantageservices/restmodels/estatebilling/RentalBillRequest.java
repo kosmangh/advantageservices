@@ -21,6 +21,7 @@ public class RentalBillRequest {
     private String billingType;
     private String createdBy;
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public HeaderRequest getHeaderRequest() {
         return headerRequest;
     }
@@ -84,5 +85,6 @@ public class RentalBillRequest {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+//</editor-fold>
 
 }

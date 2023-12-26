@@ -26,8 +26,6 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "property_ledger")
 @Cacheable(false)
-//@Setter
-//@Getter
 public class PropertyLedger extends EntityCrud implements Serializable {
 
     @JoinColumn(name = "estate_property")
@@ -37,6 +35,10 @@ public class PropertyLedger extends EntityCrud implements Serializable {
     @JoinColumn(name = "occupant")
     @ManyToOne
     private Occupant occupant;
+
+    @JoinColumn(name = "bill")
+    @ManyToOne
+    private Bills bill;
 
     @Column(name = "date_of_record_entry")
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,7 +52,7 @@ public class PropertyLedger extends EntityCrud implements Serializable {
     private String debitCreditEntry;
 
     @Column(name = "amount_involved")
-    private Double amountInvolved;
+    private Double amountPaid;
 
     @Column(name = "receipt_number_issued")
     private String receiptNumberIssued;
@@ -105,6 +107,7 @@ public class PropertyLedger extends EntityCrud implements Serializable {
         return debitCreditEntry + "-" + ledgerYear;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     @Override
     public int hashCode() {
         int hash = 0;
@@ -162,12 +165,12 @@ public class PropertyLedger extends EntityCrud implements Serializable {
         this.debitCreditEntry = debitCreditEntry;
     }
 
-    public Double getAmountInvolved() {
-        return amountInvolved;
+    public Double getamountPaid() {
+        return amountPaid;
     }
 
-    public void setAmountInvolved(Double amountInvolved) {
-        this.amountInvolved = amountInvolved;
+    public void setamountPaid(Double amountPaid) {
+        this.amountPaid = amountPaid;
     }
 
     public String getReceiptNumberIssued() {
@@ -184,6 +187,14 @@ public class PropertyLedger extends EntityCrud implements Serializable {
 
     public void setPaymentFor(String paymentFor) {
         this.paymentFor = paymentFor;
+    }
+
+    public Bills getBill() {
+        return bill;
+    }
+
+    public void setBill(Bills bill) {
+        this.bill = bill;
     }
 
     public String getPayeeName() {
@@ -281,5 +292,6 @@ public class PropertyLedger extends EntityCrud implements Serializable {
     public void setRegion(Region region) {
         this.region = region;
     }
+//</editor-fold>
 
 }

@@ -1,5 +1,6 @@
-package com.sabonay.advantageservices.services;
+package com.sabonay.advantageservices.services.utils;
 
+import com.ctrloption.constants.BillStatus;
 import com.ctrloption.constants.DebitCredit;
 import com.ctrloption.jpa2.CrudController;
 import com.ctrloption.jpa2.Enviroment;
@@ -7,14 +8,18 @@ import com.ctrloption.jpa2.QryBuilder;
 import com.ctrloption.models.DateRange;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.EntityFields;
+import com.sabonay.advantageservices.entities.estatebilling.Bills;
 import com.sabonay.advantageservices.entities.estatebilling.PropertyCharge;
 import com.sabonay.advantageservices.entities.estatebilling.PropertyLedger;
 import com.sabonay.advantageservices.entities.estatesetup.EstateProperty;
 import com.sabonay.advantageservices.entities.occupancy.Occupant;
 import com.sabonay.advantageservices.entities.occupancy.OccupantProperty;
 import com.sabonay.advantageservices.models.DataFetchType;
+import com.sabonay.advantageservices.models.billpayment.BillsInfo;
 import com.sabonay.advantageservices.models.estatebilling.PropertyLedgerInfo;
 import com.sabonay.advantageservices.models.occupancy.OccupantPropertyInfo;
+import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.OccupantBillsRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesRequest;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyListResponse;
@@ -22,11 +27,13 @@ import com.sabonay.advantageservices.restmodels.occupancy.OccupiedPropertyReques
 import com.sabonay.advantageservices.utils.AppConstants;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
+import com.sabonay.advantageservices.utils.enums.PaymentType;
 import com.sabonay.advantageservices.utils.enums.PropertyUsage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +72,7 @@ public class UtitlityServices extends CrudController implements Serializable {
         try {
             QryBuilder builder = new QryBuilder(em, PropertyCharge.class);
             builder.addNumberParam(EntityFields.chargeYear, chargeYear, QryBuilder.ComparismCriteria.EQUAL);
-            builder.addStringQryParam(EntityFields.propertyUsage, estateProperty.getPropertyUsage(), QryBuilder.ComparismCriteria.LIKE);
+            builder.addStringQryParam(EntityFields.propertyUsage, estateProperty.getPropertyUsage(), QryBuilder.ComparismCriteria.EQUAL);
             builder.addObjectParam(EntityFields.deleted, false);
             PropertyCharge propertyCharge = (PropertyCharge) builder.buildQry().getSingleResult();
             Double classAmount = 0.0;
@@ -105,18 +112,17 @@ public class UtitlityServices extends CrudController implements Serializable {
         try {
             String qry = "SELECT e FROM OccupantProperty e "
                     + "WHERE e." + fetchType.getBillTypeQuery() + " =:searchValue "
-                    + "AND e.occupationType =:occType "
+                    + "AND e.occupationType =:occupationType "
                     + "AND e.firstDateOfOccupancy <=:checkDate "
-                    + "AND (e.lastDateOfOccupancy IS NULL "
-                    + "OR e.lastDateOfOccupancy >=:checkDate) "
-                    + "ORDER BY e.firstDateOfOccupancy ASC";
+                    + "AND (e.lastDateOfOccupancy IS NULL OR e.lastDateOfOccupancy >=:checkDate) ";
+//                    + "ORDER BY e.firstDateOfOccupancy ASC ";
             log.info("getOccupantProperties4Billing parameters billingType: " + fetchType.getBillingType() + " "
                     + fetchType.getSearchValue() + " occupationType: "
                     + fetchType.getOccupationType() + " checkDate: " + checkDate);
             AppLogger.info(log, " qry fetch getOccupantProperties4Billing " + qry);
             Query query = em.createQuery(qry)
                     .setParameter("searchValue", fetchType.getSearchValue())
-                    .setParameter("occType", fetchType.getOccupationType())
+                    .setParameter("occupationType", fetchType.getOccupationType())
                     .setParameter("checkDate", checkDate, TemporalType.DATE);
             listOfOccupantProperties = query.getResultList();
             return listOfOccupantProperties;
@@ -139,10 +145,10 @@ public class UtitlityServices extends CrudController implements Serializable {
             log.info("getAllOccupantProperties4Billing parameter  occupationType: " + occupationType + " checkDate: " + checkDate);
             Query query = null;
             if (occupationType.equalsIgnoreCase(AppConstants.ALL)) {
-                qry += occuType;
                 query = em.createQuery(qry)
                         .setParameter("checkDate", checkDate, TemporalType.DATE);
             } else {
+                qry += occuType;
                 query = em.createQuery(qry)
                         .setParameter("occType", occupationType)
                         .setParameter("checkDate", checkDate, TemporalType.DATE);
@@ -290,6 +296,33 @@ public class UtitlityServices extends CrudController implements Serializable {
             AppLogger.error(log, e, "Error processing getOccupantProperties4Billing request");
             return null;
         }
+    }
+
+    public List<OccupantProperty> getOccupantProperties(String occupantId) {
+        Date checkDate = new Date();
+        List<OccupantProperty> listOfOccupantProperties = new ArrayList<>();
+        String billTypeQuery = "";
+        try {
+
+//            billTypeQuery = "estateProperty.estateBlock.recordId";
+            String qry = "SELECT e FROM OccupantProperty e "
+                    + "WHERE e.occupant.recordId =:occupantId "
+                    + "AND e.firstDateOfOccupancy <=:checkDate "
+                    + "AND (e.lastDateOfOccupancy IS NULL "
+                    + "OR e.lastDateOfOccupancy >=:checkDate) "
+                    + "ORDER BY e.firstDateOfOccupancy ASC";
+            log.info("getOccupantProperties parameters  " + " occupationType: " + occupantId
+                    + " checkDate: " + checkDate);
+            AppLogger.info(log, " qry fetch getOccupantProperties4Billing " + qry);
+            Query query = em.createQuery(qry)
+                    .setParameter("occupantId", occupantId)
+                    .setParameter("checkDate", checkDate, TemporalType.DATE);
+            listOfOccupantProperties = query.getResultList();
+            return listOfOccupantProperties;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing getOccupantProperties4Billing request");
+            return null;
+        }
 
     }
 
@@ -350,6 +383,85 @@ public class UtitlityServices extends CrudController implements Serializable {
             return ledgers;
         } catch (Exception e) {
             AppLogger.error(log, e, "getOccupantPropertyLedgerEntries IOException");
+            return null;
+        }
+    }
+
+    public List<BillsInfo> getAllOutstandingBills(OccupantBillsRequest request) throws IOException {
+        try {
+            String msg = "";
+            AppLogger.printPayload(log, "getAllOutstandingBills request ", request);
+            List<Bills> listOfBills = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, Bills.class);
+            builder.addStringQryParam(EntityFields._occupant, request.getOccupantId(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, request.getPropertyId(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addInParam(EntityFields.billStatus, Arrays.asList(BillStatus.UNPAID.getLabel(), BillStatus.PART_PAYMENT.getLabel()));
+            builder.orderByDesc(EntityFields.billYear);
+            log.info(" getAllOutstandingBills " + builder.getQryInfo());
+            listOfBills = builder.buildQry().getResultList();
+            if (null == listOfBills) {
+                return null;
+            }
+            log.info("total outstanding bills retrieved " + listOfBills.size());
+            List<BillsInfo> ledgers = new ArrayList<>();
+            if (!listOfBills.isEmpty()) {
+                for (Bills eachOne : listOfBills) {
+                    ledgers.add(new BillsInfo(eachOne));
+                }
+            }
+            return ledgers;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "getAllOutstandingBills IOException");
+            return null;
+        }
+    }
+
+    public List<Bills> getOccupantOutstandingBills(Bills bill, Boolean spreadAmtForOccupantProperties) throws IOException {
+        try {
+            log.info("inside getOccupantOutstandingBills method");
+            String msg = "";
+            log.info(" getOccupantOutstandingBills payment type " + bill.getBillType());
+            AppLogger.info(log, "getOccupantOutstandingBills occupantId:: " + bill.getOccupant().getRecordId()
+                    + " billMonth:: " + bill.getBillMonth()
+                    + " billYear:: " + bill.getBillYear());
+
+            if (spreadAmtForOccupantProperties) {
+                log.info("it's spreadAmtForOccupantProperties, fetch all properties of occupant with " + bill.getBillType());
+                QryBuilder builder = new QryBuilder(em, Bills.class);
+                builder.addObjectParam(EntityFields._occupant, bill.getOccupant());
+                if (bill.getBillType().equalsIgnoreCase(PaymentType.HOUSE_RENT.getLabel())) {
+                    builder.addStringQryParam(EntityFields.billMonth, bill.getBillMonth(), QryBuilder.ComparismCriteria.EQUAL);
+                }
+                builder.addNumberParam(EntityFields.billYear, bill.getBillYear(), QryBuilder.ComparismCriteria.EQUAL);
+                builder.addInParam(EntityFields.billStatus, Arrays.asList(BillStatus.UNPAID.getLabel(), BillStatus.PART_PAYMENT.getLabel()));
+                log.info(" getOccupantOutstandingBills " + builder.getQryInfo());
+                return builder.buildQry().getResultList();
+            }
+            log.info("it's only the only the bill in question");
+            List<Bills> listOfBills = new ArrayList<>();
+            listOfBills.add(bill);
+            return listOfBills;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "getAllOutstandingBills IOException");
+            return null;
+        }
+    }
+
+    public List<Bills> getOccupantOutstandingBills1(String occupantId, String propertyId, Integer billYear) throws IOException {
+        try {
+            String msg = "";
+            AppLogger.info(log, "getOccupantOutstandingBills occupantId:: " + occupantId + " billYear:: " + billYear);
+            QryBuilder builder = new QryBuilder(em, Bills.class);
+            builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
+            if (null != propertyId) {
+                builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
+            }
+            builder.addNumberParam(EntityFields.billYear, billYear, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addInParam(EntityFields.billStatus, Arrays.asList(BillStatus.UNPAID.getLabel(), BillStatus.PART_PAYMENT.getLabel()));
+            log.info(" getOccupantOutstandingBills " + builder.getQryInfo());
+            return builder.buildQry().getResultList();
+        } catch (Exception e) {
+            AppLogger.error(log, e, "getAllOutstandingBills IOException");
             return null;
         }
     }
@@ -472,9 +584,9 @@ public class UtitlityServices extends CrudController implements Serializable {
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
@@ -510,9 +622,9 @@ public class UtitlityServices extends CrudController implements Serializable {
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
@@ -532,11 +644,9 @@ public class UtitlityServices extends CrudController implements Serializable {
         try {
 
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
-//            DateRange dateRange = new DateRange(startDate, endDate);
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
             builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
             builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
-//            builder.addDateRange(dateRange, EntityFields.dateOfRecordEntry);
             builder.addObjectParam(EntityFields.deleted, false);
             listOfPropertyLedgers = builder.buildQry().getResultList();
             log.info("total occupantCurrentBalWithinDateRange " + listOfPropertyLedgers.size());
@@ -551,9 +661,9 @@ public class UtitlityServices extends CrudController implements Serializable {
             Double totalDebit = 0.0, totalCredit = 0.0, balance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
                 if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                    totalCredit += eachOne.getAmountInvolved();
+                    totalCredit += eachOne.getamountPaid();
                 } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                    totalDebit += eachOne.getAmountInvolved();
+                    totalDebit += eachOne.getamountPaid();
                 }
             }
             log.info(" totalDebit: " + totalDebit + " totalDebit: " + totalDebit);
@@ -571,9 +681,9 @@ public class UtitlityServices extends CrudController implements Serializable {
 
     public Double[] occupantCurrentBalWithinDateRange1(String occupantId, String propertyId, Date startDate, Date endDate) {
         try {
-            String qry = "SELECT SUM(CASE WHEN l.type = 'CREDIT' THEN l.amountInvolved ELSE 0 END) AS credit_total, "
-                    + "SUM(CASE WHEN l.type = 'DEBIT' THEN l.amountInvolved ELSE 0 END) AS debit_total, "
-                    + "SUM(CASE WHEN l.type = 'DEBIT' THEN l.amountInvolved ELSE - l.amountInvolved END) AS balance "
+            String qry = "SELECT SUM(CASE WHEN l.type = 'CREDIT' THEN l.amountPaid ELSE 0 END) AS credit_total, "
+                    + "SUM(CASE WHEN l.type = 'DEBIT' THEN l.amountPaid ELSE 0 END) AS debit_total, "
+                    + "SUM(CASE WHEN l.type = 'DEBIT' THEN l.amountPaid ELSE - l.amountPaid END) AS balance "
                     + "FROM PropertyLedger l WHERE "
                     + "e.occupant.recordId =:occupantId "
                     + "e.estateProperty.recordId =:propertyId "
@@ -639,7 +749,7 @@ public class UtitlityServices extends CrudController implements Serializable {
         try {
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
-//            
+//
             builder.addNumberParam(EntityFields.ledgerYear, ledgerYear, QryBuilder.ComparismCriteria.LESS_THAN_OR_EQUAL);
             builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
             builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
@@ -657,27 +767,131 @@ public class UtitlityServices extends CrudController implements Serializable {
             Double currentTotalDebit = 0.0, currentTotalCredit = 0.0, currentBalance = 0.0;
             for (PropertyLedger eachOne : listOfPropertyLedgers) {
 
-                //Selected year 
+                //Selected year
                 if (Objects.equals(ledgerYear, eachOne.getLedgerYear())) {
 
                     if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                        currentTotalCredit += eachOne.getAmountInvolved();
+                        currentTotalCredit += eachOne.getamountPaid();
                     } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                        currentTotalDebit += eachOne.getAmountInvolved();
+                        currentTotalDebit += eachOne.getamountPaid();
                     }
 
                 } else {
 
                     if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.CREDIT.getLabel())) {
-                        arrearsTotalCredit += eachOne.getAmountInvolved();
+                        arrearsTotalCredit += eachOne.getamountPaid();
                     } else if (eachOne.getDebitCreditEntry().equalsIgnoreCase(DebitCredit.DEBIT.getLabel())) {
-                        arrearsTotalDebit += eachOne.getAmountInvolved();
+                        arrearsTotalDebit += eachOne.getamountPaid();
                     }
 
                 }
 
             }
             log.info(" currentTotalDebit: " + currentTotalDebit + " currentTotalCredit: " + currentTotalCredit);
+            log.info(" arrearsTotalDebit: " + arrearsTotalDebit + " arrearsTotalCredit: " + arrearsTotalCredit);
+            currentBalance = currentTotalDebit - currentTotalCredit;
+            arrearsbalance = arrearsTotalDebit - arrearsTotalCredit;
+            log.info(" current balance: " + arrearsbalance);
+            totals[0] = currentBalance;
+            totals[1] = arrearsbalance;
+            return totals;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing occupantCurrentBal request");
+            return null;
+        }
+    }
+
+    public Double[] getPreviousAndCurrentBal4GroundRentDemandNotice(String occupantId, String propertyId, Integer ledgerYear) {
+        try {
+            List<Bills> listOfAllPropertyBills = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, Bills.class);
+//            
+//            builder.addNumberParam(EntityFields.billYear, ledgerYear, QryBuilder.ComparismCriteria.LESS_THAN_OR_EQUAL);
+            builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, propertyId, QryBuilder.ComparismCriteria.EQUAL);
+            log.info(" getPreviousAndCurrentBal4GroundRentDemandNotice " + builder.getQryInfo());
+            listOfAllPropertyBills = builder.buildQry().getResultList();
+            log.info("total bills found:: " + listOfAllPropertyBills.size());
+            Double[] totals = new Double[2];
+            if (listOfAllPropertyBills.isEmpty()) {
+                totals[0] = 0.0;
+                totals[1] = 0.0;
+                return totals;
+            }
+            Double arrearsTotalDebit = 0.0, arrearsTotalCredit = 0.0, arrearsbalance = 0.0;
+            Double currentTotalDebit = 0.0, currentTotalCredit = 0.0, currentBalance = 0.0;
+            for (Bills eachOne : listOfAllPropertyBills) {
+                //Selected year
+                if (Objects.equals(ledgerYear, eachOne.getBillYear())) {
+                    currentTotalCredit += eachOne.getBillAmountPaid();
+                    currentTotalDebit += (eachOne.getBillAmount() + eachOne.getBillPenaltyAmount());
+                } else {
+                    arrearsTotalCredit += eachOne.getBillAmountPaid();
+                    arrearsTotalDebit += (eachOne.getBillAmount() + eachOne.getBillPenaltyAmount());
+                }
+            }
+
+            log.info(" currentTotalDebit: " + currentTotalDebit + " currentTotalCredit: " + currentTotalCredit);
+            log.info(" arrearsTotalDebit: " + arrearsTotalDebit + " arrearsTotalCredit: " + arrearsTotalCredit);
+            currentBalance = currentTotalDebit - currentTotalCredit;
+            arrearsbalance = arrearsTotalDebit - arrearsTotalCredit;
+            log.info(" current balance: " + arrearsbalance);
+            totals[0] = currentBalance;
+            totals[1] = arrearsbalance;
+            return totals;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "Error processing occupantCurrentBal request");
+            return null;
+        }
+    }
+
+    public Double[] getCurrentBalAndArrears4DemandNotice(Bills bill, DemandNoticeRequest request) {
+        try {
+            List<Bills> listOfAllPropertyBills = new ArrayList<>();
+            QryBuilder builder = new QryBuilder(em, Bills.class);
+            builder.addStringQryParam(EntityFields._occupant, bill.getOccupant().getRecordId(), QryBuilder.ComparismCriteria.EQUAL);
+            builder.addStringQryParam(EntityFields._property, bill.getEstateProperty().getRecordId(), QryBuilder.ComparismCriteria.EQUAL);
+            log.info(" gets all bills for the occupant and property " + builder.getQryInfo());
+            listOfAllPropertyBills = builder.buildQry().getResultList();
+            log.info("total bills found:: " + listOfAllPropertyBills.size());
+            Double[] totals = new Double[2];
+            if (listOfAllPropertyBills.isEmpty()) {
+                totals[0] = 0.0;
+                totals[1] = 0.0;
+                return totals;
+            }
+            Double arrearsTotalDebit = 0.0, arrearsTotalCredit = 0.0, arrearsbalance = 0.0;
+            Double currentTotalDebit = 0.0, currentTotalCredit = 0.0, currentBalance = 0.0;
+            log.info(" currentTotalDebit: " + currentTotalDebit + " currentTotalCredit: " + currentTotalCredit);
+
+            if (request.getBillType().equalsIgnoreCase(PaymentType.GROUND_RENT.getLabel())) {
+                log.info("It's house rent compare only year");
+                for (Bills eachBill : listOfAllPropertyBills) {
+                    if (Objects.equals(eachBill.getBillYear(), request.getBillYear())) {
+                        log.info("This is gets the ground rent for selected year");
+                        currentTotalCredit += eachBill.getBillAmountPaid();
+                        currentTotalDebit += (eachBill.getBillAmount() + eachBill.getBillPenaltyAmount());
+                        continue;
+                    }
+                    arrearsTotalCredit += eachBill.getBillAmountPaid();
+                    arrearsTotalDebit += (eachBill.getBillAmount() + eachBill.getBillPenaltyAmount());
+                }
+            }
+
+            if (request.getBillType().equalsIgnoreCase(PaymentType.HOUSE_RENT.getLabel())) {
+                log.info("It's house rent compare month and year");
+                for (Bills eachBill : listOfAllPropertyBills) {
+                    if (Objects.equals(eachBill.getBillYear(), request.getBillYear()) && eachBill.getBillMonth().equalsIgnoreCase(request.getBillMonth())) {
+                        log.info("This is gets the ground rent for selected month and year");
+                        currentTotalCredit += eachBill.getBillAmountPaid();
+                        currentTotalDebit += (eachBill.getBillAmount() + eachBill.getBillPenaltyAmount());
+                        continue;
+                    }
+                    arrearsTotalCredit += eachBill.getBillAmountPaid();
+                    arrearsTotalDebit += (eachBill.getBillAmount() + eachBill.getBillPenaltyAmount());
+                }
+            }
+
             log.info(" arrearsTotalDebit: " + arrearsTotalDebit + " arrearsTotalCredit: " + arrearsTotalCredit);
             currentBalance = currentTotalDebit - currentTotalCredit;
             arrearsbalance = arrearsTotalDebit - arrearsTotalCredit;

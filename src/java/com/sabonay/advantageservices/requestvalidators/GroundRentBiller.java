@@ -50,7 +50,7 @@
 //    private int currentYear = DateTimeUtils.getCurrentYear();
 //    private List<Object[]> estatePropertyObjList = null;
 //    private PaymentType paymentType;
-//    private double amountInvolved = 0.0;
+//    private double amountPaid = 0.0;
 //    private String recordedBy;
 //
 //    int year_current = Calendar.getInstance().get(Calendar.YEAR);
@@ -97,7 +97,7 @@
 //        PropertyLedger propertyLedger = new PropertyLedger();
 //        propertyLedger.setEstateProperty(estateProperty);
 //        propertyLedger.setLedgerYear(selectedYear);
-//        propertyLedger.setAmountInvolved(amtToBeCharge);
+//        propertyLedger.setamountPaid(amtToBeCharge);
 //        propertyLedger.setDateOfRecordEntry(new Date());
 //        propertyLedger.setDateOfRecordTransaction(calendar.getTime());
 //        propertyLedger.setDebitCreditEntry(DebitCredit.DEBIT.getLabel());

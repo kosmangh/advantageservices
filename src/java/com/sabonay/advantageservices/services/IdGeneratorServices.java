@@ -8,6 +8,7 @@ import com.sabonay.advantageservices.utils.enums.PaymentType;
 import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -15,6 +16,8 @@ import javax.inject.Inject;
  */
 @Stateless
 public class IdGeneratorServices extends GenUUID implements Serializable {
+
+    private static final Logger log = Logger.getLogger(IdGeneratorServices.class.getName());
 
     public static String APPLICATION_NAME = "supermart";
     public static String ZERO_STRING = "0";
@@ -81,7 +84,7 @@ public class IdGeneratorServices extends GenUUID implements Serializable {
                 id += "/" + "{" + estatePropertyLedger.getReceiptNumberIssued() + "}";
             }
         }
-        estatePropertyLedger.setRecordId(id);
+        estatePropertyLedger.setRecordId(id.toUpperCase());
     }
 
     public static String generateEstateLedgerId(PropertyLedger estatePropertyLedger, String month) {
@@ -127,7 +130,25 @@ public class IdGeneratorServices extends GenUUID implements Serializable {
         }
 
         estatePropertyLedger.setRecordId(id);
-        return id;
+        return id.toUpperCase();
+    }
+
+    public static String generateGroundRentBillId(PropertyLedger ledger) {
+        String ids;
+        log.info("property id " + ledger.getEstateProperty().getRecordId());
+        log.info("occupant id " + ledger.getOccupant().getRecordId());
+        log.info("payment type " + ledger.getPaymentType());
+        log.info("ledger year " + ledger.getLedgerYear());
+        ids = ledger.getEstateProperty().getRecordId() + "/" + ledger.getOccupant().getRecordId()
+                + "/" + ledger.getPaymentType() + "/" + ledger.getLedgerYear();
+        return ids;
+    }
+
+    public static String generateHouseRentBillId(PropertyLedger ledger, String month) {
+        String ids;
+        ids = ledger.getEstateProperty().getRecordId() + "/" + ledger.getOccupant().getRecordId()
+                + "/" + ledger.getPaymentType() + "/" + month;
+        return ids;
     }
 
 }

@@ -48,7 +48,7 @@ public class BillPayment extends EntityCrud implements Serializable {
     private String modeOfPaymentNo;
 
     @Column(name = "amount_involved")
-    private Double amountInvolved;
+    private Double amountPaid;
 
     @Override
     public int hashCode() {
@@ -116,12 +116,12 @@ public class BillPayment extends EntityCrud implements Serializable {
         this.modeOfPaymentNo = modeOfPaymentNo;
     }
 
-    public Double getAmountInvolved() {
-        return amountInvolved;
+    public Double getamountPaid() {
+        return amountPaid;
     }
 
-    public void setAmountInvolved(Double amountInvolved) {
-        this.amountInvolved = amountInvolved;
+    public void setamountPaid(Double amountPaid) {
+        this.amountPaid = amountPaid;
     }
 //</editor-fold>
 }

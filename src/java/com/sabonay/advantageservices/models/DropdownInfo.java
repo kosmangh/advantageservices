@@ -1,5 +1,8 @@
 package com.sabonay.advantageservices.models;
 
+import com.sabonay.advantageservices.utils.AppLogger;
+import org.apache.log4j.Logger;
+
 /**
  * @author Daud Ainoo
  * @Company Sabonay
@@ -9,94 +12,50 @@ package com.sabonay.advantageservices.models;
  */
 public class DropdownInfo {
 
-    private final String estateId;
-    private final String estateName;
-    private final String blockId;
-    private final String blockName;
-    private final String propertyId;
-    private final String propertyName;
+    private static final Logger log = Logger.getLogger(DropdownInfo.class.getName());
 
-    private DropdownInfo(Builder builder) {
-        this.estateId = builder.estateId;
-        this.estateName = builder.estateName;
-        this.blockId = builder.blockId;
-        this.blockName = builder.blockName;
-        this.propertyId = builder.propertyId;
-        this.propertyName = builder.propertyName;
+    private String recordId;
+    private String recordName;
+    private String entityName;
+
+    public DropdownInfo() {
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public String getEstateId() {
-        return estateId;
-    }
-
-    public String getEstateName() {
-        return estateName;
-    }
-
-    public String getBlockId() {
-        return blockId;
-    }
-
-    public String getBlockName() {
-        return blockName;
-    }
-
-    public String getPropertyId() {
-        return propertyId;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public static class Builder {
-
-        private String estateId;
-        private String estateName;
-        private String blockId;
-        private String blockName;
-        private String propertyId;
-        private String propertyName;
-
-        private Builder() {
-        }
-
-        public Builder estateId(String estateId) {
-            this.estateId = estateId;
-            return this;
-        }
-
-        public Builder estateName(String estateName) {
-            this.estateName = estateName;
-            return this;
-        }
-
-        public Builder blockId(String blockId) {
-            this.blockId = blockId;
-            return this;
-        }
-
-        public Builder blockName(String blockName) {
-            this.blockName = blockName;
-            return this;
-        }
-
-        public Builder propertyId(String propertyId) {
-            this.propertyId = propertyId;
-            return this;
-        }
-
-        public Builder propertyName(String propertyName) {
-            this.propertyName = propertyName;
-            return this;
-        }
-
-        public DropdownInfo build() {
-            return new DropdownInfo(this);
+    public DropdownInfo(String recordId, String recordName, String entityName) {
+        try {
+            this.recordId = recordId;
+            this.recordName = recordName;
+            this.entityName = entityName;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "error setting " + entityName + " DropdownInfo constructor ");
         }
     }
+
+//<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
+
+    public String getRecordName() {
+        return recordName;
+    }
+
+    public void setRecordName(String recordName) {
+        this.recordName = recordName;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
+//</editor-fold>
+
 }

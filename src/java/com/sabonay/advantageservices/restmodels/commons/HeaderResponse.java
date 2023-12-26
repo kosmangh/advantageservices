@@ -1,11 +1,15 @@
 package com.sabonay.advantageservices.restmodels.commons;
+
 public class HeaderResponse {
+
     private String sourceCode;
     private String requestId;
     private String zone;
     private String region;
+    private Integer recordCount = 0;
     private String responseCode;
     private String responseMessage;
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
 
     public String getSourceCode() {
         return sourceCode;
@@ -17,6 +21,14 @@ public class HeaderResponse {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public Integer getRecordCount() {
+        return recordCount;
+    }
+
+    public void setRecordCount(Integer recordCount) {
+        this.recordCount = recordCount;
     }
 
     public void setSourceCode(String sourceCode) {
@@ -54,4 +66,6 @@ public class HeaderResponse {
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
     }
+//</editor-fold>
+
 }

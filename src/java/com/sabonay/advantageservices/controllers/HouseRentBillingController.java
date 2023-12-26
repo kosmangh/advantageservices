@@ -5,7 +5,7 @@ import com.sabonay.advantageservices.restmodels.estatebilling.GroundRentalBillLi
 import com.sabonay.advantageservices.restmodels.estatebilling.RentalBackBillRequest;
 import com.sabonay.advantageservices.restmodels.estatebilling.RentalBillListRequest;
 import com.sabonay.advantageservices.restmodels.estatebilling.RentalBillRequest;
-import com.sabonay.advantageservices.services.RentalBillServices;
+import com.sabonay.advantageservices.services.HouseRentBillServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
 import java.io.IOException;
@@ -31,14 +31,14 @@ import org.apache.log4j.MDC;
 @Path("estatebilling")
 @Produces(value = {MediaType.APPLICATION_JSON})
 @Consumes(value = {MediaType.APPLICATION_JSON})
-public class RentalBillController implements Serializable {
+public class HouseRentBillingController implements Serializable {
 
-    private static final Logger log = Logger.getLogger(RentalBillServices.class.getName());
+    private static final Logger log = Logger.getLogger(HouseRentBillServices.class.getName());
     @Inject
-    private RentalBillServices rentalBillServices;
+    private HouseRentBillServices rentalBillServices;
 
     @POST
-    @Path(value = "/applyrentalbill")
+    @Path(value = "/apply-rental-bill")
     public GenericResponse prepareRentalBill(RentalBillRequest request) {
         log.info("inside prepareRentalBill method");
         long startTime = System.currentTimeMillis();
@@ -50,7 +50,7 @@ public class RentalBillController implements Serializable {
             AppLogger.printPayload(log, "RentalBillResponse ", response);
             return response;
         } catch (IOException e) {
-            AppLogger.error(log, e, "prepareGroundRentBills IOException");
+            AppLogger.error(log, e, "prepareHouseRentBills IOException");
             response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
             return response;
         } finally {
@@ -75,7 +75,7 @@ public class RentalBillController implements Serializable {
             AppLogger.printPayload(log, "RentalBillResponse ", response);
             return response;
         } catch (IOException e) {
-            AppLogger.error(log, e, "prepareGroundRentBills IOException");
+            AppLogger.error(log, e, "prepareHouseRentBills IOException");
             response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
             return response;
         } finally {

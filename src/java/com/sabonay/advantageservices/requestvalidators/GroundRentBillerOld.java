@@ -55,7 +55,7 @@
 //    private int currentYear = DateTimeUtils.getCurrentYear();
 //    private List<Object[]> estatePropertyObjList = null;
 //    private PaymentType paymentType;
-//    private double amountInvolved = 0.0;
+//    private double amountPaid = 0.0;
 //    private String recordedBy;
 //
 //    @Inject
@@ -106,7 +106,7 @@
 //        PropertyLedger propertyLedger = new PropertyLedger();
 //        propertyLedger.setEstateProperty(estateProperty);
 //        propertyLedger.setLedgerYear(selectedYear);
-//        propertyLedger.setAmountInvolved(amtToBeCharge);
+//        propertyLedger.setamountPaid(amtToBeCharge);
 //        propertyLedger.setDateOfRecordEntry(new Date());
 //        propertyLedger.setDateOfRecordTransaction(calendar.getTime());
 //        propertyLedger.setDebitCreditEntry(DebitCredit.DEBIT.getLabel());
@@ -176,7 +176,7 @@
 //            PropertyLedger propertyLedger = new PropertyLedger();
 //            propertyLedger.setEstateProperty(estateProperty);
 //            propertyLedger.setLedgerYear(selectedYear);
-//            propertyLedger.setAmountInvolved(amtToBeCharge);
+//            propertyLedger.setamountPaid(amtToBeCharge);
 //            propertyLedger.setDateOfRecordEntry(new Date());
 //            propertyLedger.setDateOfRecordTransaction(calendar.getTime());
 //            propertyLedger.setDebitCreditEntry(DebitCredit.DEBIT.getLabel());
@@ -207,9 +207,9 @@
 //        for (int i = firstYear; i <= backTrackYear; i++) {
 //            listOfDebitLedger = customDataSource.loadLedgerEntriesOnEntryType(estateProperty, i, DebitCredit.DEBIT);
 //            for (PropertyLedger epl : listOfDebitLedger) {
-//                backTrackSum += epl.getAmountInvolved();
+//                backTrackSum += epl.getamountPaid();
 //                if (backTrackSum > totalCredit) {
-//                    epl.setAmountInvolved(amtToBeCharge);
+//                    epl.setamountPaid(amtToBeCharge);
 //                    ds.getCommonQry().estatePropertyLedgerUpdate(epl);
 //                }
 //            }
@@ -287,7 +287,7 @@
 //                PropertyLedger propertyLedger = new PropertyLedger();
 //                propertyLedger.setEstateProperty(estateProperty);
 //                propertyLedger.setLedgerYear(backTrackYear);
-//                propertyLedger.setAmountInvolved(amtToBeCharge);
+//                propertyLedger.setamountPaid(amtToBeCharge);
 //                propertyLedger.setDateOfRecordEntry(new Date());
 //                propertyLedger.setDateOfRecordTransaction(calendar.getTime());
 //                propertyLedger.setDebitCreditEntry(DebitCredit.DEBIT.getLabel());

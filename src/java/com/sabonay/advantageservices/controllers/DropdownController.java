@@ -34,45 +34,93 @@ public class DropdownController implements Serializable {
     private DropdownServices dropdownServices;
 
     @GET
-    @Path(value = "/estates")
+    @Path(value = "/zone-dropdowns")
     @Produces(MediaType.APPLICATION_JSON)
-    public DropdownResponse fetchZoneEstates(@QueryParam("zoneId") String zoneId) {
-        MDC.put("requestid", zoneId);
+    public DropdownResponse fetchZones() {
+        log.info("fetching zone dropdowns");
         DropdownResponse response = new DropdownResponse();
         try {
-            AppLogger.printPayload(log, "zoneId:: ", zoneId);
-            response = dropdownServices.getEstatesDropdown(zoneId);
-            AppLogger.printPayload(log, "DropdownResponse:: ", response);
+            response = dropdownServices.getZonesDropdowns();
+            AppLogger.printPayload(log, "Zone DropdownResponse:: ", response);
             return response;
         } catch (Exception e) {
-            AppLogger.error(log, e, "login validation IOException");
+            AppLogger.error(log, e, "error fetching zone dropdowns");
             HeaderResponse headerResponse = new HeaderResponse();
             headerResponse.setResponseCode(ResponseCodes.FAILED);
             headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
+            response.setHeaderResponse(headerResponse);
             return response;
         } finally {
-            MDC.remove("requestid");
         }
     }
 
     @GET
-    @Path(value = "/blocks")
-    public DropdownResponse fetchEstateBlocks(@QueryParam("estateId") String estateId) {
-        MDC.put("requestid", estateId);
+    @Path(value = "/estate-dropdowns")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DropdownResponse fetchZoneEstates(@QueryParam("zoneId") String zoneId) {
+        MDC.put("requestId", zoneId);
         DropdownResponse response = new DropdownResponse();
         try {
-            AppLogger.printPayload(log, "estateId:: ", estateId);
-            response = dropdownServices.getEstatesDropdown(estateId);
-            AppLogger.printPayload(log, "DropdownResponse:: ", response);
+            log.info("fetching estate dropdowns for zoneId: " + zoneId);
+            response = dropdownServices.getEstatesDropdown(zoneId);
+            AppLogger.printPayload(log, "fetchZoneEstates DropdownResponse:: ", response);
             return response;
         } catch (Exception e) {
-            AppLogger.error(log, e, "login validation IOException");
+            AppLogger.error(log, e, "fetchZoneEstates IOException");
             HeaderResponse headerResponse = new HeaderResponse();
             headerResponse.setResponseCode(ResponseCodes.FAILED);
             headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
+            response.setHeaderResponse(headerResponse);
             return response;
         } finally {
-            MDC.remove("requestid");
+            MDC.remove("requestId");
         }
     }
+
+    @GET
+    @Path(value = "/block-dropdowns")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DropdownResponse fetchEstateBlocks(@QueryParam("estateId") String estateId) throws Exception {
+        MDC.put("requestId", estateId);
+        DropdownResponse response = new DropdownResponse();
+        try {
+            AppLogger.printPayload(log, "estateId:: ", estateId);
+            response = dropdownServices.getBlocksDropdown(estateId);
+            AppLogger.printPayload(log, " fetchEstateBlocks DropdownResponse:: ", response);
+            return response;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "fetchEstateBlocks IOException");
+            HeaderResponse headerResponse = new HeaderResponse();
+            headerResponse.setResponseCode(ResponseCodes.FAILED);
+            headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
+            response.setHeaderResponse(headerResponse);
+            return response;
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @GET
+    @Path(value = "/property-dropdowns")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DropdownResponse fetchProperties(@QueryParam("blockId") String estateId) throws Exception {
+        MDC.put("requestId", estateId);
+        DropdownResponse response = new DropdownResponse();
+        try {
+            AppLogger.printPayload(log, "estateId:: ", estateId);
+            response = dropdownServices.getBlocksDropdown(estateId);
+            AppLogger.printPayload(log, " fetchEstateBlocks DropdownResponse:: ", response);
+            return response;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "fetchEstateBlocks IOException");
+            HeaderResponse headerResponse = new HeaderResponse();
+            headerResponse.setResponseCode(ResponseCodes.FAILED);
+            headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
+            response.setHeaderResponse(headerResponse);
+            return response;
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
 }

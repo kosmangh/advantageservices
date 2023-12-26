@@ -18,8 +18,11 @@ public class BillPaymentSuper {
     protected Date dateOfTransaction;
     protected String modeOfPayment;
     protected String modeOfPaymentNo;
-    protected Double amountInvolved;
+    protected Double amountPaid;
+    protected Integer billYear;
+    protected boolean spreadAmtForOccupantProperties;
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public String getRecordId() {
         return recordId;
     }
@@ -32,6 +35,14 @@ public class BillPaymentSuper {
         return occupantId;
     }
 
+    public Integer getBillYear() {
+        return billYear;
+    }
+
+    public void setBillYear(Integer billYear) {
+        this.billYear = billYear;
+    }
+
     public void setOccupantId(String occupantId) {
         this.occupantId = occupantId;
     }
@@ -42,6 +53,14 @@ public class BillPaymentSuper {
 
     public void setReceiptNumber(String receiptNumber) {
         this.receiptNumber = receiptNumber;
+    }
+
+    public boolean isSpreadAmtForOccupantProperties() {
+        return spreadAmtForOccupantProperties;
+    }
+
+    public void setSpreadAmtForOccupantProperties(boolean spreadAmtForOccupantProperties) {
+        this.spreadAmtForOccupantProperties = spreadAmtForOccupantProperties;
     }
 
     public Date getDatePaid() {
@@ -76,12 +95,13 @@ public class BillPaymentSuper {
         this.modeOfPaymentNo = modeOfPaymentNo;
     }
 
-    public Double getAmountInvolved() {
-        return amountInvolved;
+    public Double getamountPaid() {
+        return amountPaid;
     }
 
-    public void setAmountInvolved(Double amountInvolved) {
-        this.amountInvolved = amountInvolved;
+    public void setamountPaid(Double amountPaid) {
+        this.amountPaid = amountPaid;
     }
+//</editor-fold>
 
 }

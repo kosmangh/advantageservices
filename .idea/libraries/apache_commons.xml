@@ -1,0 +1,31 @@
+<component name="libraryTable">
+  <library name="apache-commons">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-io.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-net.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-digester.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-configuration-1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/mina-core-2.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-beanutils-bean-collections.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-collections4-4.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-codec-1.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-lang3-3.12.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-dbutils.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-net-3.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/poi.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-lang.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-compress.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-email.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-beanutils.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/apache-httpcomponents-httpclient.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-configuration-1.9-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-beanutils-core.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-exec.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apache-commons/commons-fileupload.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

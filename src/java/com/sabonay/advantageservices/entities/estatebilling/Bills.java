@@ -1,15 +1,17 @@
 package com.sabonay.advantageservices.entities.estatebilling;
 
 import com.ctrloption.entities.super_classes.EntityCrud;
+import com.sabonay.advantageservices.entities.estatesetup.EstateProperty;
+import com.sabonay.advantageservices.entities.occupancy.Occupant;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 /**
  * @author Daud Ainoo
@@ -21,37 +23,21 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "bills")
 @Cacheable(false)
-//@Data
 public class Bills extends EntityCrud implements Serializable {
 
-    @Column(name = "billnumber")
-    private String billnumber;
+    @JoinColumn(name = "property")
+    @ManyToOne
+    private EstateProperty estateProperty;
 
-    @Column(name = "estate_property")
-    private String estateProperty;
-
-    @Column(name = "property_occupant")
-    private String propertyOccupant;
-
-    @Column(name = "date_of_record_entry")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateOfRecordEntry;
-
-    @Size(max = 255)
-    @Column(name = "bill_detail")
-    private String billDetail;
+    @JoinColumn(name = "occupant")
+    @ManyToOne
+    private Occupant occupant;
 
     @Column(name = "bill_amount")
     private Double billAmount;
 
-    @Column(name = "default_amount")
-    private Double defaultAmount;
-
-    @Column(name = "bill_vat")
-    private Double billVat;
-
-    @Column(name = "bill_discount")
-    private Double billDiscount;
+    @Column(name = "bill_penalty_amount")
+    private Double billPenaltyAmount;
 
     @Column(name = "bill_amount_paid")
     private Double billAmountPaid;
@@ -59,18 +45,34 @@ public class Bills extends EntityCrud implements Serializable {
     @Column(name = "bill_type")
     private String billType;
 
-    @Column(name = "bill_year")
-    private Integer billYear;
-
-    @Column(name = "recorded_by")
-    private String recordedBy;
-
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
+    @Column(name = "entry_type")
+    private String entryType;
 
     @Column(name = "bill_status")
     private String billStatus;
 
+    @Column(name = "bill_month")
+    private String billMonth;
+
+    @Column(name = "bill_year")
+    private Integer billYear;
+
+    @Column(name = "last_cr_date")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastCrDate;
+
+    @Column(name = "last_cr_recorded_by")
+    private String lastCrRecordedBy;
+
+    @Column(name = "last_dr_date")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastDrDate;
+
+    @Column(name = "last_dr_recorded_by")
+    private String lastDrRecordedBy;
+
+
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     @Override
     public int hashCode() {
         int hash = 0;
@@ -88,44 +90,20 @@ public class Bills extends EntityCrud implements Serializable {
         return !((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId)));
     }
 
-    public String getBillnumber() {
-        return billnumber;
-    }
-
-    public void setBillnumber(String billnumber) {
-        this.billnumber = billnumber;
-    }
-
-    public String getEstateProperty() {
+    public EstateProperty getEstateProperty() {
         return estateProperty;
     }
 
-    public void setEstateProperty(String estateProperty) {
+    public void setEstateProperty(EstateProperty estateProperty) {
         this.estateProperty = estateProperty;
     }
 
-    public String getPropertyOccupant() {
-        return propertyOccupant;
+    public Occupant getOccupant() {
+        return occupant;
     }
 
-    public void setPropertyOccupant(String propertyOccupant) {
-        this.propertyOccupant = propertyOccupant;
-    }
-
-    public Date getDateOfRecordEntry() {
-        return dateOfRecordEntry;
-    }
-
-    public void setDateOfRecordEntry(Date dateOfRecordEntry) {
-        this.dateOfRecordEntry = dateOfRecordEntry;
-    }
-
-    public String getBillDetail() {
-        return billDetail;
-    }
-
-    public void setBillDetail(String billDetail) {
-        this.billDetail = billDetail;
+    public void setOccupant(Occupant occupant) {
+        this.occupant = occupant;
     }
 
     public Double getBillAmount() {
@@ -136,28 +114,21 @@ public class Bills extends EntityCrud implements Serializable {
         this.billAmount = billAmount;
     }
 
-    public Double getDefaultAmount() {
-        return defaultAmount;
+    public String getBillMonth() {
+        return billMonth;
     }
 
-    public void setDefaultAmount(Double defaultAmount) {
-        this.defaultAmount = defaultAmount;
+    public void setBillMonth(String billMonth) {
+        this.billMonth = billMonth;
     }
 
-    public Double getBillVat() {
-        return billVat;
+    public Double getBillPenaltyAmount() {
+        return billPenaltyAmount;
     }
 
-    public void setBillVat(Double billVat) {
-        this.billVat = billVat;
-    }
 
-    public Double getBillDiscount() {
-        return billDiscount;
-    }
-
-    public void setBillDiscount(Double billDiscount) {
-        this.billDiscount = billDiscount;
+    public void setBillPenaltyAmount(Double billPenaltyAmount) {
+        this.billPenaltyAmount = billPenaltyAmount;
     }
 
     public Double getBillAmountPaid() {
@@ -176,28 +147,12 @@ public class Bills extends EntityCrud implements Serializable {
         this.billType = billType;
     }
 
-    public Integer getBillYear() {
-        return billYear;
+    public String getEntryType() {
+        return entryType;
     }
 
-    public void setBillYear(Integer billYear) {
-        this.billYear = billYear;
-    }
-
-    public String getRecordedBy() {
-        return recordedBy;
-    }
-
-    public void setRecordedBy(String recordedBy) {
-        this.recordedBy = recordedBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
+    public void setEntryType(String entryType) {
+        this.entryType = entryType;
     }
 
     public String getBillStatus() {
@@ -208,4 +163,45 @@ public class Bills extends EntityCrud implements Serializable {
         this.billStatus = billStatus;
     }
 
+    public Integer getBillYear() {
+        return billYear;
+    }
+
+    public void setBillYear(Integer billYear) {
+        this.billYear = billYear;
+    }
+
+    public Date getLastCrDate() {
+        return lastCrDate;
+    }
+
+    public void setLastCrDate(Date lastCrDate) {
+        this.lastCrDate = lastCrDate;
+    }
+
+    public String getLastCrRecordedBy() {
+        return lastCrRecordedBy;
+    }
+
+    public void setLastCrRecordedBy(String lastCrRecordedBy) {
+        this.lastCrRecordedBy = lastCrRecordedBy;
+    }
+
+    public Date getLastDrDate() {
+        return lastDrDate;
+    }
+
+    public void setLastDrDate(Date lastDrDate) {
+        this.lastDrDate = lastDrDate;
+    }
+
+    public String getLastDrRecordedBy() {
+        return lastDrRecordedBy;
+    }
+
+    public void setLastDrRecordedBy(String lastDrRecordedBy) {
+        this.lastDrRecordedBy = lastDrRecordedBy;
+    }
+
+//</editor-fold>
 }

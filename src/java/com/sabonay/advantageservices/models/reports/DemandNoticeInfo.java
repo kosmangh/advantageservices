@@ -1,6 +1,7 @@
 package com.sabonay.advantageservices.models.reports;
 
-import com.sabonay.advantageservices.entities.estatebilling.PropertyLedger;
+import com.ctrloption.formating.NumberFormattingUtils;
+import com.sabonay.advantageservices.entities.estatebilling.Bills;
 import com.sabonay.advantageservices.utils.AppLogger;
 import java.util.Date;
 import java.util.Objects;
@@ -17,6 +18,7 @@ public class DemandNoticeInfo {
 
     private String lessee;
     private String streetName;
+    private String entryType;
     private String fileNo;
     private String propertyNo;
     private String propertyClass;
@@ -25,22 +27,39 @@ public class DemandNoticeInfo {
     private Double arrears;
     private Double totalAmountDue;
     private Date lesseExpiryDate;
+    private String currentChargeString;
+    private String arrearsString;
+    private String totalAmountDueString;
+    private String arrearsLabel;
+    private String totalAmountDueLabel;
 
-    public DemandNoticeInfo(PropertyLedger ledger, Double currentAmount, Double previousArrears, Date expiryDate) {
+
+    public DemandNoticeInfo(Bills bill, Double[] calculatedAmounts, Date expiryDate) {
         try {
-            if (Objects.isNull(ledger.getOccupant())) {
+            if (Objects.isNull(bill.getOccupant())) {
                 lessee = "Name not found";
             } else {
-                lessee = ledger.getOccupant().getOccupantName();
+                lessee = bill.getOccupant().getOccupantName();
             }
-            streetName = ledger.getEstateProperty().getEstateBlock().getBlockName();
-            fileNo = ledger.getEstateProperty().getPropertyName();
-            propertyNo = ledger.getEstateProperty().getPropertyNumber();
-            propertyClass = ledger.getEstateProperty().getEstateBlock().getEstate().getEstateClass().replaceAll("_", " ");
-            location = ledger.getEstateProperty().getEstateBlock().getEstate().getEstateName();
-            currentCharge = currentAmount;
-            arrears = previousArrears;
+            streetName = bill.getEstateProperty().getEstateBlock().getBlockName();
+            fileNo = bill.getEstateProperty().getPropertyName();
+            propertyNo = bill.getEstateProperty().getPropertyNumber();
+            propertyClass = bill.getEstateProperty().getEstateBlock().getEstate().getEstateClass().replaceAll("_", " ");
+            location = bill.getEstateProperty().getEstateBlock().getEstate().getEstateName();
+            entryType = bill.getEntryType();
+            currentCharge = calculatedAmounts[0];
+            arrears = calculatedAmounts[1];
+
+            if (currentCharge < 0) {
+//                currentCharge = 0.0;
+                arrears = calculatedAmounts[0] + calculatedAmounts[1];
+            }
             totalAmountDue = currentCharge + arrears;
+            arrearsLabel = arrears < 0 ? "Credit bal." : "Arrears";
+            totalAmountDueLabel = totalAmountDue < 0 ? "Total Balance Due" : "Total Amount Due";
+            currentChargeString = NumberFormattingUtils.formatDouble(currentCharge, 2);
+            arrearsString = NumberFormattingUtils.formatDouble(arrears, 2);
+            totalAmountDueString = NumberFormattingUtils.formatDouble(totalAmountDue, 2);
             lesseExpiryDate = Optional.ofNullable(expiryDate).orElse(null);
         } catch (Exception e) {
             AppLogger.error(log, e, "error processing " + lessee + "'s " + fileNo + " demand notice");
@@ -61,6 +80,54 @@ public class DemandNoticeInfo {
 
     public String getStreetName() {
         return streetName;
+    }
+
+    public String getEntryType() {
+        return entryType;
+    }
+
+    public String getArrearsLabel() {
+        return arrearsLabel;
+    }
+
+    public void setArrearsLabel(String arrearsLabel) {
+        this.arrearsLabel = arrearsLabel;
+    }
+
+    public String getCurrentChargeString() {
+        return currentChargeString;
+    }
+
+    public void setCurrentChargeString(String currentChargeString) {
+        this.currentChargeString = currentChargeString;
+    }
+
+    public String getArrearsString() {
+        return arrearsString;
+    }
+
+    public void setArrearsString(String arrearsString) {
+        this.arrearsString = arrearsString;
+    }
+
+    public String getTotalAmountDueString() {
+        return totalAmountDueString;
+    }
+
+    public void setTotalAmountDueString(String totalAmountDueString) {
+        this.totalAmountDueString = totalAmountDueString;
+    }
+
+    public String getTotalAmountDueLabel() {
+        return totalAmountDueLabel;
+    }
+
+    public void setTotalAmountDueLabel(String totalAmountDueLabel) {
+        this.totalAmountDueLabel = totalAmountDueLabel;
+    }
+
+    public void setEntryType(String entryType) {
+        this.entryType = entryType;
     }
 
     public void setStreetName(String streetName) {

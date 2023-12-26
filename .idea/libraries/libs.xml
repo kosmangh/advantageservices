@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/spring.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/ctrloption-commons.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/gson-2.8.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

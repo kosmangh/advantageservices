@@ -32,11 +32,11 @@ public class Config extends Application {
         resources.add(com.sabonay.advantageservices.controllers.EstateController.class);
         resources.add(com.sabonay.advantageservices.controllers.EstatePropertyController.class);
         resources.add(com.sabonay.advantageservices.controllers.GroundRentBillingController.class);
+        resources.add(com.sabonay.advantageservices.controllers.HouseRentBillingController.class);
         resources.add(com.sabonay.advantageservices.controllers.OccupantController.class);
         resources.add(com.sabonay.advantageservices.controllers.OccupantPropertyController.class);
         resources.add(com.sabonay.advantageservices.controllers.PropertyChargeController.class);
         resources.add(com.sabonay.advantageservices.controllers.RegionController.class);
-        resources.add(com.sabonay.advantageservices.controllers.RentalBillController.class);
         resources.add(com.sabonay.advantageservices.controllers.ReportsController.class);
         resources.add(com.sabonay.advantageservices.controllers.StaffController.class);
         resources.add(com.sabonay.advantageservices.controllers.ZoneController.class);

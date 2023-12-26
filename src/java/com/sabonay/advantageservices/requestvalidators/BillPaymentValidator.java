@@ -4,6 +4,7 @@ import com.ctrloption.utils.MsgFormatter;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.restmodels.billpayment.BillPaymentRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.UpdatePayBillRequest;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.utils.AppLogger;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class BillPaymentValidator {
                 headerResponse.setResponseMessage(msg);
                 return headerResponse;
             }
-            if (null == request.getAmountInvolved()) {
+            if (null == request.getamountPaid()) {
                 msg = MsgFormatter.sentenceCase(ResponseCodes.AMOUNT_REQUEIRED);
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
                 headerResponse.setResponseMessage(msg);
@@ -61,6 +62,78 @@ public class BillPaymentValidator {
 
             if (null == request.getOccupantId()) {
                 msg = MsgFormatter.sentenceCase(ResponseCodes.OCCUPANT_REQUIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+            log.info("validateBillPaymentRequest passed validation;set commons fields to BillPayment entity");
+            AppLogger.printPayload(log, "After validation ", headerResponse);
+            msg = ResponseCodes.SUCCESS;
+            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
+            headerResponse.setResponseMessage(msg);
+            return headerResponse;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "validateBillPaymentRequest exception error");
+            msg = ResponseCodes.getAppMsg(ResponseCodes.ERROR_SERVICING_REQUEST);
+            headerResponse.setResponseCode(ResponseCodes.FAILED);
+            headerResponse.setResponseMessage(msg);
+            return headerResponse;
+        }
+    }
+
+    public static HeaderResponse validateUpdateBillPaymentRequest(UpdatePayBillRequest request) throws IOException {
+        HeaderResponse headerResponse = new HeaderResponse();
+        String msg = "";
+        try {
+            headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
+            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                msg = headerResponse.getResponseMessage();
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+            if (null == request.getAmountPaid()) {
+                msg = MsgFormatter.sentenceCase(ResponseCodes.AMOUNT_REQUEIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+
+            if (null == request.getModifiedBy()) {
+                msg = MsgFormatter.sentenceCase(ResponseCodes.MODIFIED_REQUIRED);
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+
+            if (null == request.getReceiptNumber()) {
+                msg = "Receipt number is required";
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+
+            if (null == request.getBillId()) {
+                msg = "Bill id is required";
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+            if (null == request.getModeOfPayment()) {
+                msg = "Payment mode is required";
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+
+            if (null == request.getModeOfPaymentNo()) {
+                msg = "Payment mode number is required";
+                headerResponse.setResponseCode(ResponseCodes.FAILED);
+                headerResponse.setResponseMessage(msg);
+                return headerResponse;
+            }
+            if (null == request.getLedgerId()) {
+                msg = "Ledger id is required";
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
                 headerResponse.setResponseMessage(msg);
                 return headerResponse;

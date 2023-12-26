@@ -19,6 +19,7 @@ public class DemandNoticeResponse {
     private Double totalArrears = 0.0;
     private Double totalCurrentCharge = 0.0;
     private Double totalAmountDue = 0.0;
+    private String entryType;
 
     //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public HeaderResponse getHeaderResponse() {
@@ -35,6 +36,14 @@ public class DemandNoticeResponse {
 
     public void setDemandNotices(List<DemandNoticeInfo> demandNotices) {
         this.demandNotices = demandNotices;
+    }
+
+    public String getEntryType() {
+        return entryType;
+    }
+
+    public void setEntryType(String entryType) {
+        this.entryType = entryType;
     }
 
     public Double getTotalAmountDue() {

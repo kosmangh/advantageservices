@@ -48,7 +48,11 @@ public class BasicServices extends CrudController implements Serializable {
             builder.addStringQryParam(EntityFields.password, password, QryBuilder.ComparismCriteria.EQUAL);
             builder.addObjectParam(EntityFields.deleted, false);
             AppLogger.info(log, "validateUser qry :: " + builder.getQry());
-            return (Staff) builder.buildQry().getSingleResult();
+            List<Staff> staffList = builder.buildQry().getResultList();
+            if (staffList.isEmpty()) {
+                return null;
+            }
+            return staffList.get(0);
         } catch (Exception e) {
             AppLogger.error(log, e, "validateUser exception");
             return null;

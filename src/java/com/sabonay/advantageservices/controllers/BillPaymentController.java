@@ -3,8 +3,12 @@ package com.sabonay.advantageservices.controllers;
 import com.sabonay.advantageservices.restmodels.billpayment.BillPaymentRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.DemandNoticeResponse;
+import com.sabonay.advantageservices.restmodels.billpayment.OccupantBillsRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.OccupantBillsResponse;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesRequest;
 import com.sabonay.advantageservices.restmodels.billpayment.PropertyLedgerEntriesResponse;
+import com.sabonay.advantageservices.restmodels.billpayment.ReversePayBillRequest;
+import com.sabonay.advantageservices.restmodels.billpayment.UpdatePayBillRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.services.BillPaymentServices;
 import com.sabonay.advantageservices.utils.AppLogger;
@@ -39,7 +43,7 @@ public class BillPaymentController implements Serializable {
     private BillPaymentServices billPaymentServices;
 
     @POST
-    @Path(value = "/paybill")
+    @Path(value = "/pay-bill")
     public GenericResponse billPaymentRequest(BillPaymentRequest request) {
         log.info("inside billPaymentRequest method");
         long startTime = System.currentTimeMillis();
@@ -64,7 +68,81 @@ public class BillPaymentController implements Serializable {
     }
 
     @POST
-    @Path(value = "/propertledgerentries")
+    @Path(value = "/update-pay-bill")
+    public GenericResponse updateBillPaymentRequest(UpdatePayBillRequest request) {
+        log.info("inside billPaymentRequest method");
+        long startTime = System.currentTimeMillis();
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        GenericResponse response = new GenericResponse();
+        try {
+            AppLogger.printPayload(log, "BillPaymentRequest ", request);
+            response = billPaymentServices.processUpdatePayBillRequest(request);
+            AppLogger.printPayload(log, "BillPaymentResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "billPaymentRequest IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            log.info("Execution time for " + request.getHeaderRequest().getRequestType() + " : " + executionTime + " milliseconds");
+            MDC.remove("requestid");
+
+        }
+    }
+
+    @POST
+    @Path(value = "/reverse-pay-bill")
+    public GenericResponse reverseBillPaymentRequest(ReversePayBillRequest request) {
+        log.info("inside reverseBillPaymentRequest method");
+        long startTime = System.currentTimeMillis();
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        GenericResponse response = new GenericResponse();
+        try {
+            AppLogger.printPayload(log, "reverseBillPaymentRequest ", request);
+            response = billPaymentServices.processReversePayBillRequest(request);
+            AppLogger.printPayload(log, "ReverseBillPaymentRequestResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "billPaymentRequest IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            log.info("Execution time for " + request.getHeaderRequest().getRequestType() + " : " + executionTime + " milliseconds");
+            MDC.remove("requestid");
+
+        }
+    }
+
+    @POST
+    @Path(value = "/outstanding-bills")
+    public OccupantBillsResponse fetchOutstandingBills(OccupantBillsRequest request) {
+        log.info("inside fetchOutstandingBills method");
+        long startTime = System.currentTimeMillis();
+        MDC.put("requestid", request.getHeaderRequest().getRequestId());
+        OccupantBillsResponse response = new OccupantBillsResponse();
+        try {
+            AppLogger.printPayload(log, "OccupantBillsRequest ", request);
+            response = billPaymentServices.fetchOutstandingBills(request);
+            AppLogger.printPayload(log, "OccupantBillsResponse ", response);
+            return response;
+        } catch (IOException e) {
+            AppLogger.error(log, e, "fetchOutstandingBills IOException");
+            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
+            return response;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            log.info("Execution time for " + request.getHeaderRequest().getRequestType() + " : " + executionTime + " milliseconds");
+            MDC.remove("requestid");
+        }
+    }
+
+    @POST
+    @Path(value = "/property-ledgers")
     public PropertyLedgerEntriesResponse fetchPropertyLedgerEntries(PropertyLedgerEntriesRequest request) {
         log.info("inside fetchPropertyLedgerEntries method");
         long startTime = System.currentTimeMillis();
@@ -87,7 +165,7 @@ public class BillPaymentController implements Serializable {
 
         }
     }
-    
+
     @POST
     @Path(value = "/allpropertledgerentries")
     public PropertyLedgerEntriesResponse fetchAllPropertyLedgerEntries(PropertyLedgerEntriesRequest request) {
@@ -114,7 +192,7 @@ public class BillPaymentController implements Serializable {
     }
 
     @POST
-    @Path(value = "/billpayments")
+    @Path(value = "/bill-payments")
     public PropertyLedgerEntriesResponse fetchBillPayments(PropertyLedgerEntriesRequest request) {
         log.info("inside fetchBillPayments method");
         long startTime = System.currentTimeMillis();

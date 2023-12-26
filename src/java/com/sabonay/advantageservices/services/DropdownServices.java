@@ -9,6 +9,7 @@ import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatesetup.Estate;
 import com.sabonay.advantageservices.entities.estatesetup.EstateBlock;
+import com.sabonay.advantageservices.entities.estatesetup.EstateZone;
 import com.sabonay.advantageservices.models.DropdownInfo;
 import com.sabonay.advantageservices.restmodels.commons.DropdownResponse;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
@@ -43,6 +44,45 @@ public class DropdownServices extends CrudController implements Serializable {
         setEnviroment(Enviroment.JAVA_EE);
     }
 
+    public DropdownResponse getZonesDropdowns() {
+        DropdownResponse response = new DropdownResponse();
+        HeaderResponse headerResponse = new HeaderResponse();
+        try {
+            QryBuilder builder = new QryBuilder(em, EstateZone.class);
+            builder.addReturnField("e." + EntityFields.recordId);
+            builder.addReturnField("e." + EntityFields.zoneName);
+            builder.addObjectParam(EntityFields.deleted, false);
+            builder.orderByAsc(EntityFields.zoneName);
+
+            log.info("fetch zone qry:: " + builder.getQryInfo());
+            List<Object[]> resultList = builder.buildQry().getResultList();
+            log.info("total zones retrieved:: " + resultList.size());
+            List<DropdownInfo> dropdownDataList = new ArrayList<>();
+            for (Object[] eachObject : resultList) {
+                DropdownInfo dropdownInfo = new DropdownInfo(
+                        ObjectValue.getStringValue(eachObject[0]),
+                        ObjectValue.getStringValue(eachObject[1]),
+                        "ZONES"
+                );
+                dropdownDataList.add(dropdownInfo);
+            }
+            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
+            headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
+            headerResponse.setRequestId("123456");
+            headerResponse.setZone("ZONES");
+            headerResponse.setRegion("ZONES");
+            headerResponse.setRecordCount(dropdownDataList.size());
+            response.setHeaderResponse(headerResponse);
+            response.setDropdownList(dropdownDataList);
+            return response;
+        } catch (Exception e) {
+            AppLogger.error(log, e, "getZonesDropdowns IOException");
+            headerResponse.setResponseCode(ResponseCodes.FAILED);
+            headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
+            return response;
+        }
+    }
+
     public DropdownResponse getEstatesDropdown(String zoneId) {
         DropdownResponse response = new DropdownResponse();
         HeaderResponse headerResponse = new HeaderResponse();
@@ -50,26 +90,30 @@ public class DropdownServices extends CrudController implements Serializable {
             QryBuilder builder = new QryBuilder(em, Estate.class);
             builder.addReturnField("e." + EntityFields.recordId);
             builder.addReturnField("e." + EntityFields.estateName);
-            builder.addStringQryParam(EntityFields._region_zone, zoneId, QryBuilder.ComparismCriteria.EQUAL);
-//        builder.addReturnField("e." + EntityFields._branchCode);
+            if (!zoneId.equalsIgnoreCase("A")) {
+                builder.addStringQryParam(EntityFields._region_zone, zoneId, QryBuilder.ComparismCriteria.EQUAL);
+            }
             builder.addObjectParam(EntityFields.deleted, false);
             builder.orderByAsc(EntityFields.estateName);
 
             log.info("getEstateDropdown qry " + builder.getQryInfo());
             List<Object[]> resultList = builder.buildQry().getResultList();
             log.info("total estateDropdown retrieved " + resultList.size());
-            List<DropdownInfo> listOfEstates = new ArrayList<>();
+            List<DropdownInfo> dropdownDataList = new ArrayList<>();
             for (Object[] eachObject : resultList) {
-                DropdownInfo dropdownInfo = DropdownInfo.builder()
-                        .estateId(ObjectValue.getStringValue(eachObject[0]))
-                        .estateName(ObjectValue.getStringValue(eachObject[1]))
-                        .build();
-                listOfEstates.add(dropdownInfo);
+                dropdownDataList.add(new DropdownInfo(
+                        ObjectValue.getStringValue(eachObject[0]),
+                        ObjectValue.getStringValue(eachObject[1]),
+                        "ESTATES"));
             }
             headerResponse.setResponseCode(ResponseCodes.SUCCESS);
             headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
+            headerResponse.setRecordCount(dropdownDataList.size());
+            headerResponse.setZone("ESTATES");
+            headerResponse.setRegion("ESTATES");
+            headerResponse.setRequestId("ESTATES");
             response.setHeaderResponse(headerResponse);
-            response.setDropdownList(listOfEstates);
+            response.setDropdownList(dropdownDataList);
             return response;
         } catch (Exception e) {
             AppLogger.error(log, e, "getEstateDropdown IOException");
@@ -77,7 +121,6 @@ public class DropdownServices extends CrudController implements Serializable {
             headerResponse.setResponseMessage(MsgFormatter.sentenceCase(AppConstants.ERROR_PROCESSING_REQUEST));
             return response;
         }
-
     }
 
     public DropdownResponse getBlocksDropdown(String estateId) {
@@ -87,24 +130,30 @@ public class DropdownServices extends CrudController implements Serializable {
             QryBuilder builder = new QryBuilder(em, EstateBlock.class);
             builder.addReturnField("e." + EntityFields.recordId);
             builder.addReturnField("e." + EntityFields.blockName);
-            builder.addStringQryParam(EntityFields._estate, estateId, QryBuilder.ComparismCriteria.EQUAL);
+            if ((null == estateId) || !estateId.equalsIgnoreCase("A")) {
+                builder.addStringQryParam(EntityFields._estate, estateId, QryBuilder.ComparismCriteria.EQUAL);
+            }
             builder.addObjectParam(EntityFields.deleted, false);
             builder.orderByAsc(EntityFields.blockName);
 
             log.info("getBlocksDropdown qry " + builder.getQryInfo());
             List<Object[]> resultList = builder.buildQry().getResultList();
             log.info("total estateDropdown retrieved " + resultList.size());
-            List<DropdownInfo> listOfBlocks = new ArrayList<>();
+            List<DropdownInfo> dropdownDataList = new ArrayList<>();
             for (Object[] eachObject : resultList) {
-                DropdownInfo dropdownInfo = DropdownInfo.builder()
-                        .blockId(ObjectValue.getStringValue(eachObject[0]))
-                        .blockName(ObjectValue.getStringValue(eachObject[1]))
-                        .build();
-                listOfBlocks.add(dropdownInfo);
+                dropdownDataList.add(new DropdownInfo(
+                        ObjectValue.getStringValue(eachObject[0]),
+                        ObjectValue.getStringValue(eachObject[1]),
+                        "BLOCKS"));
             }
             headerResponse.setResponseCode(ResponseCodes.SUCCESS);
             headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
-            response.setDropdownList(listOfBlocks);
+            headerResponse.setRecordCount(dropdownDataList.size());
+            headerResponse.setZone("BLOCKS");
+            headerResponse.setRegion("BLOCKS");
+            headerResponse.setRequestId("123456");
+            response.setHeaderResponse(headerResponse);
+            response.setDropdownList(dropdownDataList);
             return response;
         } catch (Exception e) {
             AppLogger.error(log, e, "getBlocksDropdown IOException");

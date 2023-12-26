@@ -8,9 +8,11 @@ import com.sabonay.advantageservices.services.BasicServices;
 import com.sabonay.advantageservices.services.BillPaymentServices;
 import com.sabonay.advantageservices.services.ResportServices;
 import com.sabonay.advantageservices.utils.AppLogger;
+import com.sabonay.advantageservices.utils.enums.PaymentType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,22 +79,26 @@ public class ReportsController {
             parameters.put("zoneEmail", zone.getEmail());
             parameters.put("zoneWebsite", zone.getWebsite());
 
-            parameters.put("reportTitle", "GROUND RENT DEMAND NOTICE FOR " + request.getChargeYear());
+            String reportTile = request.getBillType().equalsIgnoreCase(PaymentType.GROUND_RENT.getLabel())
+                    ? "GROUND RENT DEMAND NOTICE FOR " + request.getBillYear() : "HOUSE RENT DEMAND NOTICE FOR " + request.getBillMonth() + "," + request.getBillYear();
+
+            parameters.put("reportTitle", reportTile);
             parameters.put("footerTitle", "State Housing Company Limited");
             parameters.put("printedBy", "Daud");
             parameters.put("noticeHeader", "Please TAKE NOTICE that ground rent in respect of the under-mentioned property for the year ending "
-                    + "31-December " + request.getChargeYear() + " became due on 01-January " + request.getChargeYear() + ".");
+                    + "31-December " + request.getBillYear() + " became due on 01-January " + request.getBillYear() + ".");
             parameters.put("noticeA", "Ground Rents are payable to an accredited official of the State Housing Company Limited or any"
                     + " <b>" + zone.getBankName() + " ( " + zone.getBankBranch() + ","
                     + " A/C No. - " + zone.getAccountNo() + " )</b>, Clients who pay through the bank should present their deposit Slip for their receipt later from our Main office."
                     + " (Please indicate your File No, on the deposit Slip).\nAlternatively, you may wish to settle the Total Amount Due at the State Housing Co, Ltd., Main Office, Elfiakuma Now Site, Takoradi Technical University - Time Ent. Road");
             parameters.put("noticeB", "The company reserves the right to take any action including the law courts to recover all ground rent, one month after it became due together with costs without further notice.");
-            parameters.put("noticeC", "In accordance with the lease com payment of the ground rent reserved constitute a breach of covenant whereby the company is entitled forthwith to re-enter and terminate the lease without any right of compensation to you.");
+            parameters.put("noticeC", "In accordance with the lease non payment of the ground rent reserved constitute a breach of covenant whereby the company is entitled forthwith to re-enter and terminate the lease without any right of compensation to you.");
             parameters.put("noticeD", "Please note that ground rent shall be reviewed yearly, and any arrears shall be paid at current rate/value.");
             parameters.put("shc_logo", getClass().getResourceAsStream(ReportFiles.SHC_LOGO));
             parameters.put("coat_of_arms", getClass().getResourceAsStream(ReportFiles.COAT_OF_ARMS));
 
-            List<DemandNoticeInfo> summaryResponse = billPaymentServices.generateDemandNotice(request).getDemandNotices();
+            List<DemandNoticeInfo> summaryResponse = new ArrayList<>();
+            summaryResponse = billPaymentServices.generateDemandNotice(request).getDemandNotices();
             AppLogger.printPayload(log, "data reponse", summaryResponse);
 
             // Create a data source for the report

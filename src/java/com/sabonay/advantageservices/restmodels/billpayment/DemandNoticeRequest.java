@@ -11,8 +11,11 @@ public class DemandNoticeRequest {
     private HeaderRequest headerRequest;
     private String searchParameter;
     private String searchValue;
-    private Integer chargeYear;
+    private Integer billYear;
+    private String billMonth;
+    private String billType;
 
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
     public HeaderRequest getHeaderRequest() {
         return headerRequest;
     }
@@ -29,6 +32,22 @@ public class DemandNoticeRequest {
         return searchValue;
     }
 
+    public String getBillType() {
+        return billType;
+    }
+
+    public void setBillType(String billType) {
+        this.billType = billType;
+    }
+
+    public String getBillMonth() {
+        return billMonth;
+    }
+
+    public void setBillMonth(String billMonth) {
+        this.billMonth = billMonth;
+    }
+
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
     }
@@ -37,12 +56,13 @@ public class DemandNoticeRequest {
         this.searchParameter = searchParameter;
     }
 
-    public Integer getChargeYear() {
-        return chargeYear;
+    public Integer getBillYear() {
+        return billYear;
     }
 
-    public void setChargeYear(Integer chargeYear) {
-        this.chargeYear = chargeYear;
+    public void setBillYear(Integer billYear) {
+        this.billYear = billYear;
     }
+//</editor-fold>
 
 }

@@ -8,7 +8,7 @@ import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyListRe
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyRequest;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupiedPropertyRequest;
 import com.sabonay.advantageservices.services.OccupantPropertyServices;
-import com.sabonay.advantageservices.services.UtitlityServices;
+import com.sabonay.advantageservices.services.utils.UtitlityServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
 import java.io.IOException;

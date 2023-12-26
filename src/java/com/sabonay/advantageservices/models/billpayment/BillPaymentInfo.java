@@ -14,6 +14,7 @@ public class BillPaymentInfo extends BillPaymentSuper {
     private String createdBy;
     private String lastModifiedDate;
     private String lastModifiedBy;
+    //<editor-fold defaultstate="collapsed" desc="GETTERS AND SETTERS">
 
     public String getRegionName() {
         return regionName;
@@ -54,4 +55,5 @@ public class BillPaymentInfo extends BillPaymentSuper {
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
+//</editor-fold>
 }

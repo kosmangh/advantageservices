@@ -24,12 +24,15 @@ public class EntityFields {
     public static final String ledgerYear = "ledgerYear";
     public static final String dateOfRecordEntry = "dateOfRecordEntry";
     public static final String typeOfEntry = "dateOfRecordEntry";
-    public static String landSize = "landSize";
-    public static String blockSize = "blockSize";
-    public static String propertyLandSize = "propertyLandSize";
-    public static String occupant = "occupant";
-    public static String estateProperty = "estateProperty";
-
+    public static final String landSize = "landSize";
+    public static final String blockSize = "blockSize";
+    public static final String propertyLandSize = "propertyLandSize";
+    public static final String occupant = "occupant";
+    public static final String estateProperty = "estateProperty";
+    public static final String zoneName = "zoneName";
+    public static final String billStatus = "billStatus";
+    public static final String receiptNumberIssued = "receiptNumberIssued";
+    public static final String billMonth = "billMonth";
 
     public static final String _occupantName = "occupant.occupantName";
     public static final String _region = region + "." + recordId;
@@ -160,7 +163,6 @@ public class EntityFields {
     public static final String dateRecorded = "dateRecorded";
     public static final String productName = "productName";
     public static final String orderNo = "orderNo";
-    public static final String priceName = "priceName";
     public static final String jobTitleName = "positionName";
     public static final String monthPayment = "monthPayment";
     public static final String networkName = "networkName";
@@ -273,5 +275,7 @@ public class EntityFields {
     public static final String _orderType = branchInvoice + "." + orderType;
     public static final String assignedPersonSurname = assignedPerson + "." + surname;
     public static final String stockDate = "stockDate";
+    public static String billYear = "billYear";
+    public static String billType = "billType";
 
 }

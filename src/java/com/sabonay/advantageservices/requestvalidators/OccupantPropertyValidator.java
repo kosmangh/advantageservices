@@ -69,7 +69,7 @@ public class OccupantPropertyValidator {
             log.info("validateOccupantPropertyCommonFields passed validation;set commons fields to OccupantProperty entity");
             occupantProperty.setFirstDateOfOccupancy(request.getFirstDateOfOccupancy());
             occupantProperty.setLastDateOfOccupancy(request.getLastDateOfOccupancy());
-            occupantProperty.setOccupationType(request.getOccupationType());
+            occupantProperty.setOccupationType(request.getOccupationType().toUpperCase());
             AppLogger.printPayload(log, "After validation ", occupantProperty);
             msg = ResponseCodes.SUCCESS;
             occupantProperty.setResponseCode(ResponseCodes.SUCCESS);
