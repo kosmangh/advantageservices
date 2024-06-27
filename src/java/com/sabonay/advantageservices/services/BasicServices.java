@@ -42,7 +42,7 @@ public class BasicServices extends CrudController implements Serializable {
 
     public Staff validateUser(String username, String password) {
         try {
-            AppLogger.info(log, "username:: " + username + "password:: " + password);
+//            AppLogger.info(log, "username:: " + username + "password:: " + password);
             QryBuilder builder = new QryBuilder(em, Staff.class);
             builder.addStringQryParam(EntityFields.username, username, QryBuilder.ComparismCriteria.EQUAL);
             builder.addStringQryParam(EntityFields.password, password, QryBuilder.ComparismCriteria.EQUAL);

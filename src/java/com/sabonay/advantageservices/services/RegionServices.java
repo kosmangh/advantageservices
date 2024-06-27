@@ -1,8 +1,11 @@
 package com.sabonay.advantageservices.services;
 
+import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.estatesetup.EstateZone;
 import com.sabonay.advantageservices.entities.estatesetup.Region;
 import com.sabonay.advantageservices.models.estatesetup.RegionInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
@@ -11,9 +14,6 @@ import com.sabonay.advantageservices.restmodels.estatesetup.RegionListResponse;
 import com.sabonay.advantageservices.restmodels.estatesetup.RegionRequest;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.ResponseCodes;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,7 +122,6 @@ public class RegionServices {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updateRegion validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -196,8 +195,8 @@ public class RegionServices {
         String msg;
         try {
             headerResponse = DeleteDataValidator.validateDeleteRequest(request);
-            AppLogger.printPayloadCompact(log, "updateRegion validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayloadCompact(log, "updateRegion validation response ", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
@@ -211,7 +210,6 @@ public class RegionServices {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.info(log, "found zone " + region.toString() + " for update");
             log.info("Passed validation,about to false delete this branch details");
             region.setDeleted(true);
             region.setDeletedBy(request.getDeletedBy());
@@ -245,7 +243,6 @@ public class RegionServices {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<Region> listOfRegions = basicServices.findAll(Region.class, false);
             if (null == listOfRegions) {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));

@@ -1,6 +1,5 @@
 package com.sabonay.advantageservices.services;
 
-import com.sabonay.advantageservices.services.utils.UtitlityServices;
 import com.ctrloption.jpa2.CrudController;
 import com.ctrloption.jpa2.Enviroment;
 import com.ctrloption.jpa2.QryBuilder;
@@ -19,6 +18,7 @@ import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyListRequest;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyListResponse;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantPropertyRequest;
+import com.sabonay.advantageservices.services.utils.UtitlityServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
 import java.io.IOException;
@@ -77,7 +77,6 @@ public class OccupantPropertyServices extends CrudController implements Serializ
             }
             log.info("about to validateOccupantPropertyCommonFields");
             createOccupantProperty = OccupantPropertyValidator.validateOccupantPropertyCommonFields(request);
-            AppLogger.printPayload(log, "validateOccupantPropertyCommonFields response ", createOccupantProperty);
             if (!createOccupantProperty.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
                 msg = createOccupantProperty.getResponseMsg();
@@ -115,14 +114,12 @@ public class OccupantPropertyServices extends CrudController implements Serializ
                 return response;
             }
 
-            AppLogger.printPayloadCompact(log, "validateOccupantPropertyRequest response ", headerResponse);
             createOccupantProperty.setRecordId((request.getPropertyId() + "#" + request.getOccupantId()).toUpperCase());
             createOccupantProperty.setEstateProperty(property);
             createOccupantProperty.setOccupant(occupant);
             createOccupantProperty.setCreatedBy(request.getCreatedBy());
             createOccupantProperty.setCreatedDate(new Date());
             log.info("Passed validation,about to save estate details");
-            AppLogger.printPayload(log, "final payload create estate property ", createOccupantProperty);
             OccupantProperty saved = basicServices.save(createOccupantProperty);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -162,8 +159,6 @@ public class OccupantPropertyServices extends CrudController implements Serializ
                 return response;
             }
             updateOccupantProperty = OccupantPropertyValidator.validateOccupantPropertyCommonFields(request);
-            AppLogger.printPayload(log, "validateOccupantPropertyRequest response ", updateOccupantProperty);
-            log.info("createOccupantProperty.getResponseCode() " + updateOccupantProperty.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!updateOccupantProperty.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
                 msg = updateOccupantProperty.getResponseMsg();

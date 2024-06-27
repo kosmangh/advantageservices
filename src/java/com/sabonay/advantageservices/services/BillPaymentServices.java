@@ -89,7 +89,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             }
             log.info("about to billPaymentRequest");
             headerResponse = BillPaymentValidator.validateBillPaymentRequest(request);
-            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
@@ -235,7 +235,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             }
             log.info("about to UpdatePayBillRequest");
             headerResponse = BillPaymentValidator.validateUpdateBillPaymentRequest(request);
-            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
@@ -436,17 +436,6 @@ public class BillPaymentServices extends CrudController implements Serializable 
                 return response;
             }
             log.info("about to billPaymentRequest");
-//            headerResponse = BillPaymentValidator.validatePropetyLedgerEntriesRequest(request);
-//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
-//            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
-//                log.error("invalid rental bill request ");
-//                msg = headerResponse.getResponseMessage();
-//                headerResponse.setResponseCode(headerResponse.getResponseCode());
-//                headerResponse.setResponseMessage(msg);
-//                response.setHeaderResponse(headerResponse);
-//                AppLogger.printPayload(log, msg, headerResponse);
-//                return response;
-//            }
             //list of entries
             List<PropertyLedgerInfo> listOfPropertyLedgers = utitlityServices.getOccupantPropertyLedgerEntries(request);
             if (null == listOfPropertyLedgers) {
@@ -490,7 +479,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             }
             log.info("about to billPaymentRequest");
             headerResponse = BillPaymentValidator.validatePropetyLedgerEntriesRequest(request);
-            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
@@ -558,7 +547,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
                 return response;
             }
 
-            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
@@ -603,7 +592,7 @@ public class BillPaymentServices extends CrudController implements Serializable 
             }
             log.info("about to billPaymentRequest");
             headerResponse = BillPaymentValidator.validatePropetyLedgerEntriesRequest(request);
-            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
+//            AppLogger.printPayload(log, "billPaymentRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();

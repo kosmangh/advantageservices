@@ -1,6 +1,5 @@
 package com.sabonay.advantageservices.services;
 
-import com.sabonay.advantageservices.services.utils.UtitlityServices;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatesetup.EstateBlock;
@@ -15,6 +14,7 @@ import com.sabonay.advantageservices.restmodels.commons.GenericSearchRequest;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
 import com.sabonay.advantageservices.restmodels.estatesetup.EstatePropertyListResponse;
 import com.sabonay.advantageservices.restmodels.estatesetup.EstatePropertyRequest;
+import com.sabonay.advantageservices.services.utils.UtitlityServices;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
 import java.io.IOException;
@@ -62,8 +62,8 @@ public class EstatePropertyServices implements Serializable {
             }
             log.info("about to validateEstatePropertyCommonFields");
             createEstateProperty = EstatePropertyValidator.validateEstatePropertyCommonFields(request);
-            AppLogger.printPayload(log, "validateEstatePropertyCommonFields response ", createEstateProperty);
             if (!createEstateProperty.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayload(log, "validateEstatePropertyCommonFields response ", createEstateProperty);
                 log.info("not valid staff validation");
                 msg = createEstateProperty.getResponseMsg();
                 headerResponse.setResponseCode(createEstateProperty.getResponseCode());
@@ -80,7 +80,6 @@ public class EstatePropertyServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "validateEstatePropertyRequest response ", headerResponse);
             if (StringUtils.isEmpty(request.getCreatedBy())) {
                 msg = ResponseCodes.getAppMsg(ResponseCodes.CREATED_BY_REQUIRED);
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -103,7 +102,6 @@ public class EstatePropertyServices implements Serializable {
             createEstateProperty.setCreatedBy(request.getCreatedBy());
             createEstateProperty.setCreatedDate(new Date());
             log.info("Passed validation,about to save estate details");
-            AppLogger.printPayload(log, "final payload create estate property ", createEstateProperty);
             EstateProperty saved = basicServices.save(createEstateProperty);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -137,13 +135,12 @@ public class EstatePropertyServices implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updateEstateProperty validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayloadCompact(log, "updateEstateProperty validation response ", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
             updateEstateProperty = EstatePropertyValidator.validateEstatePropertyCommonFields(request);
-            AppLogger.printPayload(log, "validateEstatePropertyRequest response ", updateEstateProperty);
             log.info("createEstateProperty.getResponseCode() " + updateEstateProperty.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!updateEstateProperty.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");

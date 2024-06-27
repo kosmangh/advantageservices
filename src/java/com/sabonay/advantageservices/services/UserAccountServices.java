@@ -8,7 +8,6 @@ import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.useraccounts.AuditLog;
 import com.sabonay.advantageservices.models.AuditLogInfo;
 import com.sabonay.advantageservices.restmodels.auth.AuditLogListRequest;
-import com.sabonay.advantageservices.utils.AppLogger;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +44,6 @@ public class UserAccountServices extends CrudController implements Serializable 
 
     public List<AuditLogInfo> fetchAuditLogs(AuditLogListRequest request) {
         try {
-            AppLogger.printPayload(log, "final request", request);
             QryBuilder builder = new QryBuilder(em, AuditLog.class);
             DateRange dateRange = new DateRange();
             dateRange.setToDate(request.getEndDate());

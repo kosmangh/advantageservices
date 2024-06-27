@@ -96,7 +96,6 @@ public class AuthServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            log.info("valid user login");
             response.setDepartmentName(staff.getDepartment().getDepartmentName());
             response.setEmailAddress(staff.getEmail());
             response.setFullName(staff.getFullName());
@@ -206,7 +205,6 @@ public class AuthServices implements Serializable {
         String msg;
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayloadCompact(log, "audit log response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -235,7 +233,6 @@ public class AuthServices implements Serializable {
             }
             auditLog.setEstateZone(staff.getRegion().getZone());
             auditLog.setRegion(staff.getRegion());
-            AppLogger.printPayload(log, "final request", auditLog);
             AuditLog saved = basicServices.save(auditLog);
             if (null == saved) {
                 msg = "audit logging " + ResponseCodes.getAppMsg(ResponseCodes.FAILED);
@@ -262,7 +259,6 @@ public class AuthServices implements Serializable {
         String msg = "";
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -293,8 +289,6 @@ public class AuthServices implements Serializable {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
                 return response;
             }
-//            AppLogger.printPayload(log, "audit data", listOfAuditLogs);
-            log.info(" total audit logs " + listOfAuditLogs.size());
             headerResponse.setResponseCode(ResponseCodes.SUCCESS);
             headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
             response.setHeaderResponse(headerResponse);

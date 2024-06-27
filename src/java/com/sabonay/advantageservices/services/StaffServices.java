@@ -146,13 +146,11 @@ public class StaffServices {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
             Staff validatedStaff = StaffValidator.validateStaffCommonFields(request);
-            AppLogger.printPayload(log, "validateStaffRequest response ", validatedStaff);
             log.info("createStaff.getResponseCode() " + validatedStaff.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!validatedStaff.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
@@ -231,7 +229,6 @@ public class StaffServices {
         String msg;
         try {
             headerResponse = DeleteDataValidator.validateDeleteRequest(request);
-            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -281,7 +278,6 @@ public class StaffServices {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<Staff> listOfStaffs = new ArrayList<>();
             if (request.getSearchBy().equalsIgnoreCase(AppConstants.ALL)) {
                 listOfStaffs = basicServices.findAll(Staff.class, false, EntityFields.lastLoginDate);
@@ -387,7 +383,6 @@ public class StaffServices {
             loginAccount.setPassword(SecurityHash.getInstance().shaHash(request.getPassword()));
 
             loginAccount.setAccountCreatedBy(request.getCreatedBy());
-            AppLogger.printPayload(log, "final payload create staff ", loginAccount);
             if (!basicServices.update(loginAccount)) {
                 log.error("User account creation failed");
                 msg = ResponseCodes.ACCOUNT_CREATION_FAILED;

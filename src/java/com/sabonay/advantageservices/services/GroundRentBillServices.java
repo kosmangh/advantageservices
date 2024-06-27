@@ -271,7 +271,7 @@ public class GroundRentBillServices extends CrudController implements Serializab
                 return response;
             }
 
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
+//            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<PropertyLedger> listOfGroundRentBills = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
             builder.addStringQryParam("estateProperty.estateBlock.recordId", request.getBlockId(), QryBuilder.ComparismCriteria.EQUAL);

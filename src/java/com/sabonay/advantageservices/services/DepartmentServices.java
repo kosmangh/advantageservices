@@ -3,6 +3,8 @@ package com.sabonay.advantageservices.services;
 import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.useraccounts.Department;
 import com.sabonay.advantageservices.models.useraccount.DepartmentInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
@@ -11,8 +13,6 @@ import com.sabonay.advantageservices.restmodels.useraccount.DepartmentListRespon
 import com.sabonay.advantageservices.restmodels.useraccount.DepartmentRequest;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class DepartmentServices implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "CreateDepartment validation response ", headerResponse);
+//            AppLogger.printPayloadCompact(log, "CreateDepartment validation response ", headerResponse);
 
             if (StringUtils.isEmpty(request.getDepartmentName())) {
                 msg = ResponseCodes.getAppMsg(ResponseCodes.DEPARTMENT_NAME_REQUIRED);
@@ -79,7 +79,7 @@ public class DepartmentServices implements Serializable {
             department.setDepartmentName(request.getDepartmentName());
             department.setRemarks(request.getRemarks());
             department.setCreatedBy(request.getCreatedBy());
-            AppLogger.printPayload(log, "final create department request", department);
+//            AppLogger.printPayload(log, "final create department request", department);
             Department saved = basicJPA.save(department);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.DEPARTMENT_CREATION_FAILED);
@@ -165,8 +165,8 @@ public class DepartmentServices implements Serializable {
         String msg;
         try {
             headerResponse = DeleteDataValidator.validateDeleteRequest(request);
-            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
@@ -180,7 +180,6 @@ public class DepartmentServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.info(log, "found department " + department.toString() + " for update");
             log.info("Passed validation,about to false delete this branch details");
             department.setDeleted(true);
             department.setDeletedBy(request.getDeletedBy());
@@ -209,12 +208,12 @@ public class DepartmentServices implements Serializable {
         HeaderResponse headerResponse = new HeaderResponse();
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayload(log, "header validation response before", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
+//            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<Department> listOfdepartments = basicJPA.findAll(Department.class, false);
             if (null == listOfdepartments) {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));

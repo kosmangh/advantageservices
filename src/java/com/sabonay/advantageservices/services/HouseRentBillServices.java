@@ -88,7 +88,6 @@ public class HouseRentBillServices extends CrudController implements Serializabl
             }
             log.info("about to validateRentalBillRequest");
             headerResponse = RentalBillValidator.validateRentalBillRequest(request);
-            AppLogger.printPayload(log, "validateRentalBillRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
@@ -393,8 +392,8 @@ public class HouseRentBillServices extends CrudController implements Serializabl
             }
 
             headerResponse = RentalBillValidator.validateBackRentalBillRequest(request);
-            AppLogger.printPayload(log, "validateRentalBillRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayload(log, "validateRentalBillRequest response ", headerResponse);
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();
                 headerResponse.setResponseCode(headerResponse.getResponseCode());
@@ -572,7 +571,6 @@ public class HouseRentBillServices extends CrudController implements Serializabl
             }
 
             headerResponse = RentalBillValidator.validateBackRentalBillRequest(request);
-            AppLogger.printPayload(log, "validateRentalBillRequest response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.error("invalid rental bill request ");
                 msg = headerResponse.getResponseMessage();

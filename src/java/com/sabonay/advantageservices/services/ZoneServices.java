@@ -1,7 +1,10 @@
 package com.sabonay.advantageservices.services;
 
+import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.estatesetup.EstateZone;
 import com.sabonay.advantageservices.models.estatesetup.ZoneInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
@@ -10,9 +13,6 @@ import com.sabonay.advantageservices.restmodels.estatesetup.ZoneListReponse;
 import com.sabonay.advantageservices.restmodels.estatesetup.ZoneRequest;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.ResponseCodes;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,8 +60,6 @@ public class ZoneServices implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "createZone validation response ", headerResponse);
-
             if (StringUtils.isEmpty(request.getZoneName())) {
                 msg = ResponseCodes.getAppMsg(ResponseCodes.ZONE_NAME_REQUIRED);
                 headerResponse.setResponseCode(ResponseCodes.ZONE_NAME_REQUIRED);
@@ -86,7 +84,6 @@ public class ZoneServices implements Serializable {
             zone.setAddress(request.getAddress());
             zone.setContactNo(request.getContactNo());
             zone.setCreatedBy(request.getCreatedBy());
-            AppLogger.printPayload(log, "final create zone request", zone);
             EstateZone saved = basicJPA.save(zone);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.ZONE_CREATION_FAILED);
@@ -119,7 +116,6 @@ public class ZoneServices implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updateZone validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -174,8 +170,8 @@ public class ZoneServices implements Serializable {
         String msg;
         try {
             headerResponse = DeleteDataValidator.validateDeleteRequest(request);
-            AppLogger.printPayloadCompact(log, "updateZone validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayload(log, "header validation response before", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
@@ -189,7 +185,6 @@ public class ZoneServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.info(log, "found zone " + zone.toString() + " for update");
             log.info("Passed validation,about to false delete this branch details");
             zone.setDeleted(true);
             zone.setDeletedBy(request.getDeletedBy());
@@ -223,7 +218,6 @@ public class ZoneServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<EstateZone> listOfZones = basicJPA.findAll(EstateZone.class, false);
             if (null == listOfZones) {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));

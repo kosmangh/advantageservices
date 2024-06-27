@@ -5,6 +5,9 @@ import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.estatesetup.Estate;
 import com.sabonay.advantageservices.entities.estatesetup.EstateBlock;
 import com.sabonay.advantageservices.models.estatesetup.EstateBlockInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.EstateBlockValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.restmodels.commons.GenericSearchRequest;
@@ -13,9 +16,6 @@ import com.sabonay.advantageservices.restmodels.estatesetup.EstateBlockListRespo
 import com.sabonay.advantageservices.restmodels.estatesetup.EstateBlockRequest;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.EstateBlockValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,7 +59,6 @@ public class EstateBlockServices implements Serializable {
             }
             log.info("about to validateEstateBlockCommonFields");
             createEstateBlock = EstateBlockValidator.validateEstateBlockCommonFields(request);
-            AppLogger.printPayload(log, "validateEstateBlockCommonFields response ", createEstateBlock);
             if (!createEstateBlock.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
                 msg = createEstateBlock.getResponseMsg();
@@ -100,7 +99,6 @@ public class EstateBlockServices implements Serializable {
             createEstateBlock.setCreatedBy(request.getCreatedBy());
             createEstateBlock.setCreatedDate(new Date());
             log.info("Passed validation,about to save estate details");
-            AppLogger.printPayload(log, "final payload create estate ", createEstateBlock);
             EstateBlock saved = basicServices.save(createEstateBlock);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -134,13 +132,12 @@ public class EstateBlockServices implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updateEstateBlock validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayloadCompact(log, "updateEstateBlock validation response ", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
             updateEstateBlock = EstateBlockValidator.validateEstateBlockCommonFields(request);
-            AppLogger.printPayload(log, "validateEstateBlockRequest response ", updateEstateBlock);
             log.info("createEstateBlock.getResponseCode() " + updateEstateBlock.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!updateEstateBlock.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
@@ -226,7 +223,6 @@ public class EstateBlockServices implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.info(log, "found department " + estateBlock.toString() + " for update");
             log.info("Passed validation,about to false delete this branch details");
             estateBlock.setDeleted(true);
             estateBlock.setDeletedBy(request.getDeletedBy());
@@ -257,12 +253,10 @@ public class EstateBlockServices implements Serializable {
         HeaderResponse headerResponse = new HeaderResponse();
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<EstateBlock> listOfEstateBlocks = new ArrayList<>();
             listOfEstateBlocks = basicServices.searchRecords(EstateBlock.class, request.getSearchBy(),
                     request.getSearchValue(), EntityFields.blockName);
@@ -270,7 +264,6 @@ public class EstateBlockServices implements Serializable {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
                 return response;
             }
-            AppLogger.printPayload(log, "estates", listOfEstateBlocks);
             log.info("total staff retrieved " + listOfEstateBlocks.size());
             List<EstateBlockInfo> blocks = new ArrayList<>();
             if (!listOfEstateBlocks.isEmpty()) {

@@ -9,6 +9,9 @@ import com.sabonay.advantageservices.ResponseCodes;
 import com.sabonay.advantageservices.entities.EntityFields;
 import com.sabonay.advantageservices.entities.occupancy.Occupant;
 import com.sabonay.advantageservices.models.occupancy.OccupantInfo;
+import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
+import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
+import com.sabonay.advantageservices.requestvalidators.OccupantValidator;
 import com.sabonay.advantageservices.restmodels.commons.GenericDeleteRequest;
 import com.sabonay.advantageservices.restmodels.commons.GenericResponse;
 import com.sabonay.advantageservices.restmodels.commons.HeaderResponse;
@@ -17,9 +20,6 @@ import com.sabonay.advantageservices.restmodels.occupancy.OccupantListResponse;
 import com.sabonay.advantageservices.restmodels.occupancy.OccupantRequest;
 import com.sabonay.advantageservices.utils.AppLogger;
 import com.sabonay.advantageservices.utils.AppUtils;
-import com.sabonay.advantageservices.requestvalidators.DeleteDataValidator;
-import com.sabonay.advantageservices.requestvalidators.HeaderValidator;
-import com.sabonay.advantageservices.requestvalidators.OccupantValidator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -92,12 +92,10 @@ public class OccupantServices extends CrudController implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "validateOccupantRequest response ", headerResponse);
             createOccupant.setRecordId(UserAccountUtil.createDate_uuidPart(request.getOccupantName()));
             createOccupant.setCreatedBy(request.getCreatedBy());
             createOccupant.setCreatedDate(new Date());
             log.info("Passed validation,about to save estate details");
-            AppLogger.printPayload(log, "final payload create estate property ", createOccupant);
             Occupant saved = basicServices.save(createOccupant);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -131,13 +129,11 @@ public class OccupantServices extends CrudController implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updateOccupant validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
             updateOccupant = OccupantValidator.validateOccupantCommonFields(request);
-            AppLogger.printPayload(log, "validateOccupantRequest response ", updateOccupant);
             log.info("createOccupant.getResponseCode() " + updateOccupant.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!updateOccupant.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
@@ -245,8 +241,8 @@ public class OccupantServices extends CrudController implements Serializable {
         HeaderResponse headerResponse = new HeaderResponse();
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
+                AppLogger.printPayload(log, "header validation response before", headerResponse);
                 response.setHeaderResponse(headerResponse);
                 return response;
             }

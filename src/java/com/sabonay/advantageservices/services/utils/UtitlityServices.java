@@ -360,7 +360,7 @@ public class UtitlityServices extends CrudController implements Serializable {
     public List<PropertyLedgerInfo> getAllOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
-            AppLogger.printPayload(log, "getOccupantPropertyLedgerEntries request ", request);
+            AppLogger.printPayloadCompact(log, "getOccupantPropertyLedgerEntries request ", request);
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
 //            builder.addStringQryParam(request.getSearchBy(), request.getSearchValue(), QryBuilder.ComparismCriteria.LIKE);
@@ -390,7 +390,7 @@ public class UtitlityServices extends CrudController implements Serializable {
     public List<BillsInfo> getAllOutstandingBills(OccupantBillsRequest request) throws IOException {
         try {
             String msg = "";
-            AppLogger.printPayload(log, "getAllOutstandingBills request ", request);
+            AppLogger.printPayloadCompact(log, "getAllOutstandingBills request ", request);
             List<Bills> listOfBills = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, Bills.class);
             builder.addStringQryParam(EntityFields._occupant, request.getOccupantId(), QryBuilder.ComparismCriteria.EQUAL);
@@ -469,7 +469,7 @@ public class UtitlityServices extends CrudController implements Serializable {
     public List<PropertyLedgerInfo> getOccupantPropertyLedgerEntries(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
-            AppLogger.printPayload(log, "getOccupantPropertyLedgerEntries request ", request);
+            AppLogger.printPayloadCompact(log, "getOccupantPropertyLedgerEntries request ", request);
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
             if (request.getSearchBy().equalsIgnoreCase("DR")) {
@@ -504,7 +504,7 @@ public class UtitlityServices extends CrudController implements Serializable {
     public List<PropertyLedgerInfo> getBillPayments(PropertyLedgerEntriesRequest request) throws IOException {
         try {
             String msg = "";
-            AppLogger.printPayload(log, "bill payment search parameters request ", request);
+            AppLogger.printPayloadCompact(log, "bill payment search parameters request ", request);
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
             if (request.getSearchBy().equalsIgnoreCase("BAB")) {
@@ -538,7 +538,7 @@ public class UtitlityServices extends CrudController implements Serializable {
     public List<PropertyLedgerInfo> getOccupantPropertyLedgerEntriesSinceInception(String occupantId, String propertyId, String entryType) throws IOException {
         try {
             String msg = "";
-            AppLogger.printPayload(log, "getOccupantPropertyLedgerEntriesSinceInception request ", propertyId);
+            AppLogger.printPayloadCompact(log, "getOccupantPropertyLedgerEntriesSinceInception request ", propertyId);
             List<PropertyLedger> listOfPropertyLedgers = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, PropertyLedger.class);
             builder.addStringQryParam(EntityFields._occupant, occupantId, QryBuilder.ComparismCriteria.EQUAL);

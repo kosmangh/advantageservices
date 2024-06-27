@@ -72,9 +72,9 @@ public class EstateServices extends CrudController implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            log.info("about to validateEstateCommonFields");
+//            log.info("about to validateEstateCommonFields");
             createEstate = EstateValidator.validateEstateCommonFields(request);
-            AppLogger.printPayload(log, "validateEstateCommonFields response ", createEstate);
+//            AppLogger.printPayload(log, "validateEstateCommonFields response ", createEstate);
             if (!createEstate.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
                 msg = createEstate.getResponseMsg();
@@ -92,7 +92,7 @@ public class EstateServices extends CrudController implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "validateEstateRequest response ", headerResponse);
+//            AppLogger.printPayloadCompact(log, "validateEstateRequest response ", headerResponse);
             if (StringUtils.isEmpty(request.getCreatedBy())) {
                 msg = ResponseCodes.getAppMsg(ResponseCodes.CREATED_BY_REQUIRED);
                 headerResponse.setResponseCode(ResponseCodes.FAILED);
@@ -115,9 +115,7 @@ public class EstateServices extends CrudController implements Serializable {
             createEstate.setCreatedBy(request.getCreatedBy());
             createEstate.setCreatedDate(new Date());
             log.info("Passed validation,about to save estate details");
-            AppLogger.printPayload(log, "final payload create estate ", createEstate);
             Estate saved = basicServices.save(createEstate);
-//            AppLogger.printPayloadCompact(log, "final create estate payload ", createEstate);
             if (null == saved) {
                 headerResponse.setResponseCode(ResponseCodes.USER_CREATION_FAILED);
                 headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.USER_CREATION_FAILED));
@@ -150,13 +148,13 @@ public class EstateServices extends CrudController implements Serializable {
                 AppLogger.printPayload(log, msg, headerResponse);
                 return response;
             }
-            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
+//            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
             updateEstate = EstateValidator.validateEstateCommonFields(request);
-            AppLogger.printPayload(log, "validateEstateRequest response ", updateEstate);
+//            AppLogger.printPayload(log, "validateEstateRequest response ", updateEstate);
             log.info("createEstate.getResponseCode() " + updateEstate.getResponseCode() + " " + ResponseCodes.SUCCESS);
             if (!updateEstate.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 log.info("not valid staff validation");
@@ -195,13 +193,6 @@ public class EstateServices extends CrudController implements Serializable {
                 return response;
             }
             log.info("Passed validation,about to update department details");
-
-//            estate = updateEstate;
-//            estate.setRecordId(request.getRecordId().toUpperCase());
-//            estate.setRegion(region);
-//            estate.setLastModifiedBy(request.getLastModifiedBy());
-//            estate.setLastModifiedDate(new Date());
-//            estate = updateEstate;
             updateEstate.setRecordId(request.getRecordId().toUpperCase());
             updateEstate.setCreatedBy(estate.getCreatedBy());
             updateEstate.setCreatedDate(estate.getCreatedDate());
@@ -235,7 +226,6 @@ public class EstateServices extends CrudController implements Serializable {
         String msg;
         try {
             headerResponse = DeleteDataValidator.validateDeleteRequest(request);
-            AppLogger.printPayloadCompact(log, "updatedepartment validation response ", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -250,7 +240,6 @@ public class EstateServices extends CrudController implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.info(log, "found department " + estate.toString() + " for update");
             log.info("Passed validation,about to false delete this branch details");
             estate.setDeleted(true);
             estate.setDeletedBy(request.getDeletedBy());
@@ -286,7 +275,6 @@ public class EstateServices extends CrudController implements Serializable {
                 response.setHeaderResponse(headerResponse);
                 return response;
             }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
             List<Estate> listOfEstates = new ArrayList<>();
             QryBuilder builder = new QryBuilder(em, Estate.class);
             listOfEstates = builder.buildQry().getResultList();
@@ -294,7 +282,6 @@ public class EstateServices extends CrudController implements Serializable {
                 response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
                 return response;
             }
-//            AppLogger.printPayload(log, "estates", listOfEstates);
             log.info("total staff retrieved " + listOfEstates.size());
             List<EstateInfo> staffs = new ArrayList<>();
             if (!listOfEstates.isEmpty()) {

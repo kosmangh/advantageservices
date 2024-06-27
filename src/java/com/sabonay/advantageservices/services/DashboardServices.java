@@ -55,130 +55,13 @@ public class DashboardServices extends CrudController implements Serializable {
         setEnviroment(Enviroment.JAVA_EE);
     }
 
-    public DashboardSummaryResponse getDashboardSummaryold(GenericSearchRequest request) throws IOException {
-
-        DashboardSummaryResponse response = new DashboardSummaryResponse();
-        HeaderResponse headerResponse = new HeaderResponse();
-        try {
-            headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
-            if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
-                response.setHeaderResponse(headerResponse);
-                return response;
-            }
-            AppLogger.printPayload(log, "header validation response after", headerResponse);
-            //Gets estates of a zone
-            List<Estate> listOfEstates = new ArrayList<>();
-            QryBuilder builder = new QryBuilder(em, Estate.class);
-            builder.addStringQryParam(EntityFields._region_zone, request.getSearchValue(), QryBuilder.ComparismCriteria.EQUAL);
-            builder.addObjectParam(EntityFields.deleted, false);
-            listOfEstates = builder.buildQry().getResultList();
-            if (null == listOfEstates) {
-                response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
-                return response;
-            }
-            if (listOfEstates.isEmpty()) {
-                response.setEstateSummary(new ArrayList<>());
-                headerResponse.setResponseCode(ResponseCodes.SUCCESS);
-                headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
-                response.setHeaderResponse(headerResponse);
-                return response;
-            }
-
-            List<EstateProperty> listOfproperties = new ArrayList<>();
-            List<EstateBlock> listOfBlocks = new ArrayList<>();
-
-            List<EstateDashboardSummary> estateSummaryList = new ArrayList<>();
-            int totalBlks = 0, totalProps = 0, totalInactiveProp = 0;
-            int totalEstateOccupied = 0, totalBlockedOccupied = 0, totalOccupiedProperties = 0;
-            for (Estate eachEstate : listOfEstates) {
-
-//                totalBlks = 0;
-                listOfBlocks = basicServices.
-                        searchRecordsStrict(EstateBlock.class, EntityFields._estate, eachEstate.getRecordId());
-                totalBlks += listOfBlocks.size();
-
-                for (EstateBlock eachBlk : listOfBlocks) {
-
-                    List<OccupantProperty> occupiedBlocks = getOccupiedPropertiesByEstate(EntityFields._block_property, eachBlk.getRecordId());
-                    if (!occupiedBlocks.isEmpty()) {
-                        totalBlockedOccupied += 1;
-                    }
-
-                    //Gets each blocks's property
-                    listOfproperties = basicServices.
-                            searchRecordsStrict(EstateProperty.class, EntityFields._estateBlock, eachBlk.getRecordId());
-                    totalProps += listOfproperties.size();
-
-                    for (EstateProperty eachProp : listOfproperties) {
-                        if (eachProp.isBlocked()) {
-                            totalInactiveProp += 1;
-                        }
-
-                        List<OccupantProperty> occupiedProperties
-                                = getOccupiedPropertiesByEstate(EntityFields._property, eachProp.getRecordId());
-                        if (!occupiedProperties.isEmpty()) {
-                            totalOccupiedProperties += 1;
-                        }
-                    }
-
-                }
-
-                List<OccupantProperty> occupiedEstates
-                        = getOccupiedPropertiesByEstate(EntityFields._estate_block_property, eachEstate.getRecordId());
-                if (!occupiedEstates.isEmpty()) {
-                    totalEstateOccupied += 1;
-                }
-                EstateDashboardSummary eds = new EstateDashboardSummary();
-
-                eds.setEstateName(eachEstate.getEstateName());
-                eds.setRecordId(eachEstate.getRecordId());
-                eds.setBlocks(listOfBlocks.size());
-                eds.setProperties(totalProps);
-
-                eds.setAllocatedProperties(totalOccupiedProperties);
-                eds.setAvailableProperties(totalProps - totalOccupiedProperties);
-                eds.setInactiveProperties(totalInactiveProp);
-
-                estateSummaryList.add(eds);
-                occupiedEstates = new ArrayList<>();
-
-            }
-
-            //Land size
-            response.setTotalEstateSize(getGeneralSum(Estate.class, EntityFields.landSize));
-            response.setTotalBlockSize(getGeneralSum(EstateBlock.class, EntityFields.blockSize));
-            response.setTotalPropertySize(getGeneralSum(EstateProperty.class, EntityFields.propertyLandSize));
-
-            response.setOccupiedEstates(totalEstateOccupied);
-            response.setAvailableEstates(listOfEstates.size() - totalEstateOccupied);
-
-            response.setOccupiedBlocks(totalBlockedOccupied);
-            response.setAvailableBlocks(totalBlks - totalBlockedOccupied);
-
-            response.setOccupiedProperties(totalOccupiedProperties);
-            response.setAvailableProperties(totalProps - totalOccupiedProperties);
-
-            response.setEstateSummary(estateSummaryList);
-
-            headerResponse.setResponseCode(ResponseCodes.SUCCESS);
-            headerResponse.setResponseMessage(ResponseCodes.getAppMsg(ResponseCodes.SUCCESS));
-            response.setHeaderResponse(headerResponse);
-            return response;
-        } catch (IOException e) {
-            AppLogger.error(log, e, "getEstates IOException");
-            response.setHeaderResponse(AppUtils.getErrorHeaderResponse(request.getHeaderRequest()));
-            return response;
-        }
-    }
-
     public DashboardSummaryResponse getDashboardSummary(GenericSearchRequest request) throws IOException {
 
         DashboardSummaryResponse response = new DashboardSummaryResponse();
         HeaderResponse headerResponse = new HeaderResponse();
         try {
             headerResponse = HeaderValidator.validateHeaderRequest(request.getHeaderRequest());
-            AppLogger.printPayload(log, "header validation response before", headerResponse);
+//            AppLogger.printPayload(log, "header validation response before", headerResponse);
             if (!headerResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.SUCCESS)) {
                 response.setHeaderResponse(headerResponse);
                 return response;
@@ -226,12 +109,6 @@ public class DashboardServices extends CrudController implements Serializable {
 
                 for (EstateBlock eachBlk : listOfBlocks) {
                     totalBlkSize += eachBlk.getBlockSize();
-
-                    //Sums total occupied blocks and properties
-//                   List<OccupantProperty> occupiedBlocks = getOccupiedPropertiesByEstate(EntityFields._block_property, eachBlk.getRecordId());
-//                    if (!occupiedBlocks.isEmpty()) {
-//                        totalBlockedOccupied += 1;
-//                    }
                     //Sums total occupied blocks
                     int totalOccupied = 0;
                     totalOccupied = (int) occupiedEstates.parallelStream()

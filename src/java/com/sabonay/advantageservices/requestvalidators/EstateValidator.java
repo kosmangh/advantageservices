@@ -94,8 +94,8 @@ public class EstateValidator {
             estate.setEstateName(request.getEstateName());
             estate.setExpirationdate(request.getLeaseEndDate());
             estate.setLandSize(request.getLandSize());
-            AppLogger.printPayload(log, "After validation ", estate);
-            log.info("CreateStaffrRequest validation ends");
+//            AppLogger.printPayload(log, "After validation ", estate);
+//            log.info("CreateStaffrRequest validation ends");
             msg = ResponseCodes.SUCCESS;
             estate.setResponseCode(ResponseCodes.SUCCESS);
             estate.setResponseMsg(msg);
